@@ -39,7 +39,10 @@ plateauDeBase(4, [
 /* Fonctions d'écritures */
 
 writeSeperator :- write("---------").
-writeChoice(X) :- X>0, X<4, write("Vous avez choisi le choix '"), writeChoiceText(X), write("' !"), nl.
+writeChoice(1) :- write("Vous avez choisi le choix '"), writeChoiceText(1), write("' !"), nl.
+writeChoice(2) :- write("Vous avez choisi le choix '"), writeChoiceText(2), write("' !"), nl.
+writeChoice(3) :- write("Vous avez choisi le choix '"), writeChoiceText(3), write("' !"), nl.
+writeChoice(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
 writeChoiceText(1) :- write("Homme vs Homme."), !.
 writeChoiceText(2) :- write("Homme vs IA."), !.
 writeChoiceText(3) :- write("IA vs IA."), !.
@@ -60,11 +63,7 @@ typeMatchMenu :-
 	write("2. - "),writeChoiceText(2), nl,
 	write("3. - "),writeChoiceText(3), nl,
 	write("Entrez un choix : "),
-	read(CHOICE), nl, showTypeMatchChoice(CHOICE), nl.
-
-showTypeMatchChoice(X) :- X>0, X<4, writeChoice(X), !.
-showTypeMatchChoice(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
-
+	read(CHOICE), nl, writeChoice(CHOICE), nl.
 
 afficherPlateau() :- plateauDeBase(1, Plat), afficherLignes(Plat).
 
