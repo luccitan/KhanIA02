@@ -16,3 +16,9 @@ matrix_rotated(Xss, Zss) :-
   nl,
   read(X),
   animal(X).
+
+
+/* Faits dymnamiques */
+:- dynamic(fact /1)
+assert( fact(..., ...) ).
+retract( fact(..., ...) ).
