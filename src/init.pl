@@ -2,7 +2,7 @@
 	Initialisation des plateaux de bases
 	--
 */
-plateauDeBase(1, [ 
+baseBoard(1, [ 
 				[ (2,0),(2,0),(3,0),(1,0),(2,0),(2,0) ],
 				[ (1,0),(3,0),(1,0),(3,0),(1,0),(3,0) ],
 				[ (3,0),(1,0),(2,0),(2,0),(3,0),(1,0) ],
@@ -10,7 +10,7 @@ plateauDeBase(1, [
 				[ (2,0),(1,0),(3,0),(1,0),(3,0),(2,0) ], 
 				[ (1,0),(3,0),(2,0),(2,0),(1,0),(3,0) ]
 			]).
-plateauDeBase(2, [ 
+baseBoard(2, [ 
 				[ (1,0),(2,0),(2,0),(3,0),(1,0),(2,0) ],
 				[ (3,0),(1,0),(3,0),(1,0),(3,0),(2,0) ],
 				[ (2,0),(3,0),(1,0),(2,0),(1,0),(3,0) ],
@@ -18,7 +18,7 @@ plateauDeBase(2, [
 				[ (1,0),(3,0),(1,0),(3,0),(1,0),(2,0) ],
 				[ (3,0),(2,0),(2,0),(1,0),(3,0),(2,0) ]
 			]).
-plateauDeBase(3, [ 
+baseBoard(3, [ 
 				[ (3,0),(1,0),(2,0),(2,0),(3,0),(1,0) ],
 				[ (2,0),(3,0),(1,0),(3,0),(1,0),(2,0) ],
 				[ (2,0),(1,0),(3,0),(1,0),(3,0),(2,0) ],
@@ -26,7 +26,7 @@ plateauDeBase(3, [
 				[ (3,0),(1,0),(3,0),(1,0),(3,0),(1,0) ],
 				[ (2,0),(2,0),(1,0),(3,0),(2,0),(2,0) ]
 			]).
-plateauDeBase(4, [ 
+baseBoard(4, [ 
 				[ (2,0),(3,0),(1,0),(2,0),(2,0),(3,0) ], 
 				[ (2,0),(1,0),(3,0),(1,0),(3,0),(1,0) ],
 				[ (1,0),(3,0),(2,0),(3,0),(1,0),(2,0) ],
@@ -65,16 +65,16 @@ typeMatchMenu :-
 	write("Entrez un choix : "),
 	read(CHOICE), nl, writeChoice(CHOICE), nl.
 
-afficherPlateau() :- plateauDeBase(1, Plat), afficherLignes(Plat).
+showBoard() :- baseBoard(1, Plat), showRows(Plat).
 
-afficherLignes([]).
-afficherLignes([T|Q]) :- afficherCases(T), nl, afficherLigne(Q).
+showRows([]).
+showRows([T|Q]) :- showCells(T), nl, afficherLigne(Q).
 
-afficherCases([]).
-afficherCases([(1, 0)|Q]) :-  write("- "), afficherCases(Q), !.
-afficherCases([(2, 0)|Q]) :-  write("= "), afficherCases(Q), !.
-afficherCases([(3, 0)|Q]) :-  write("# "), afficherCases(Q), !.
-afficherCases([(_, 1)|Q]) :-  write("R "), afficherCases(Q), !.
-afficherCases([(_, 2)|Q]) :-  write("r "), afficherCases(Q), !.
-afficherCases([(_, 3)|Q]) :-  write("0 "), afficherCases(Q), !.
-afficherCases([(_, 4)|Q]) :-  write("o "), afficherCases(Q), !.
+showCells([]).
+showCells([(1, 0)|Q]) :-  write("- "), showCells(Q), !.
+showCells([(2, 0)|Q]) :-  write("= "), showCells(Q), !.
+showCells([(3, 0)|Q]) :-  write("# "), showCells(Q), !.
+showCells([(_, 1)|Q]) :-  write("R "), showCells(Q), !.
+showCells([(_, 2)|Q]) :-  write("r "), showCells(Q), !.
+showCells([(_, 3)|Q]) :-  write("0 "), showCells(Q), !.
+showCells([(_, 4)|Q]) :-  write("o "), showCells(Q), !.
