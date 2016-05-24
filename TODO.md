@@ -14,7 +14,7 @@ Chaque élément de la sous-liste est un tuple représentant un élément.
 
 ex : Première ligne -> 3ème élément ==> Ligne 1 Colonne 3.
 
-Chaque élément est un tuple : 
+Chaque élément est un tuple :
 
 - Premier élément : valeur de la case {1,2,3}
 - Deuxième élément : nature du pion
@@ -50,7 +50,26 @@ initBoard(Board)
 
 possiblesMoves(Board, player, PossibleMoveList)
 
---> Définit les différents coups possibles d'un joueur
+### Calcul des positions de la case 1
+On définit la fonction Pos1. On calcule toutes les positions accessibles par un mouvement à partir de la case courante. Soit (X, Y) la case courante, il y a 4 possibilités de déplacement :  
+- (X + 1, Y)
+- (X, Y + 1)
+- (X - 1, Y)
+- (X, Y - 1)
+
+### Calcul des positions de la case 2
+
+On définit la fonction Pos2. On calcule chaque Pos1 accessible à partir de Pos1 :
+
+- L = Pos1(X,Y)
+- Res = Pos1(L)
+
+
+### Calcul des positions de la case 3
+
+On définit la fonction Pos3. On calcule chaque pos1 à partir de pos2.
+- L = Pos2(X,Y)
+- Res = Pos1(L)
 
 generateMove(Board, Player, Move)
 
@@ -59,5 +78,3 @@ generateMove(Board, Player, Move)
 ## Etape 4 :
 
 Mettre tout ça en place et générer les boucles de gestion de jeu
-
-
