@@ -67,8 +67,13 @@ typeMatchMenu :-
 
 showBoard :- baseBoard(1, Plat), showRows(1, Plat).
 
+<<<<<<< HEAD
 showRows(_, []).
 showRows(numLigne, [T|Q]) :- write(numLigne), N is numLigne + 1, showCells(T), nl, showRows(N, Q).
+=======
+showRows([]).
+showRows([T|Q]) :- showCells(T), nl, showRows(Q).
+>>>>>>> 3feb7c8751753e2b4928c45c7cec3f1cd0ddb59b
 
 showCells([]).
 showCells([(1, 0)|Q]) :-  write("- "), showCells(Q), !.
