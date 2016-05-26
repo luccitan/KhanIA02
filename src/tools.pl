@@ -51,3 +51,10 @@ retire_elements(X, [T|Q], [T|Res]) :- retire_elements(X,Q,Res).
 */
 retire_doublons([], []).
 retire_doublons([T|Q], [T|R]) :- retire_elements(T, Q, Res), retire_doublons(Res, R).
+
+/*
+	difference(L1, L2, Res)
+	------------------------------
+	Prédicat qui retire les éléments de L2 présents dans L1
+	et met le résultat dans Res
+*/

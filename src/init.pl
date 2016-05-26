@@ -68,7 +68,7 @@ typeMatchMenu :-
 showBoard() :- baseBoard(1, Plat), showRows(Plat).
 
 showRows([]).
-showRows([T|Q]) :- showCells(T), nl, afficherLigne(Q).
+showRows([T|Q]) :- showCells(T), nl, showRows(Q).
 
 showCells([]).
 showCells([(1, 0)|Q]) :-  write("- "), showCells(Q), !.
