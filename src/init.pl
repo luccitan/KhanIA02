@@ -65,15 +65,13 @@ typeMatchMenu :-
 	write("Entrez un choix : "),
 	read(CHOICE), nl, writeChoice(CHOICE), nl.
 
-showBoard :- baseBoard(1, Plat), showRows(1, Plat).
+showBoard :- baseBoard(1, Plat), write("  "), showColumns(1), showRows(1, Plat).
 
-<<<<<<< HEAD
-showRows(_, []).
-showRows(numLigne, [T|Q]) :- write(numLigne), N is numLigne + 1, showCells(T), nl, showRows(N, Q).
-=======
-showRows([]).
-showRows([T|Q]) :- showCells(T), nl, showRows(Q).
->>>>>>> 3feb7c8751753e2b4928c45c7cec3f1cd0ddb59b
+showColumns(N) :- N >6, nl, write("-----------------"), nl, !.
+showColumns(N) :- write(" "), write(N), SubN is N + 1, showColumns(SubN).
+
+showRows(_, []) :- !.
+showRows(NumLigne, [T|Q]) :- write(NumLigne), write("  "), N is NumLigne + 1, showCells(T), nl, showRows(N, Q).
 
 showCells([]).
 showCells([(1, 0)|Q]) :-  write("- "), showCells(Q), !.
