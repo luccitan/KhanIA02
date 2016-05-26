@@ -2,15 +2,15 @@
 	Initialisation des plateaux de bases
 	--
 */
-baseBoard(1, [ 
+baseBoard(1, [
 				[ (2,0),(2,0),(3,0),(1,0),(2,0),(2,0) ],
 				[ (1,0),(3,0),(1,0),(3,0),(1,0),(3,0) ],
 				[ (3,0),(1,0),(2,0),(2,0),(3,0),(1,0) ],
 				[ (2,0),(3,0),(1,0),(3,0),(1,0),(2,0) ],
-				[ (2,0),(1,0),(3,0),(1,0),(3,0),(2,0) ], 
+				[ (2,0),(1,0),(3,0),(1,0),(3,0),(2,0) ],
 				[ (1,0),(3,0),(2,0),(2,0),(1,0),(3,0) ]
 			]).
-baseBoard(2, [ 
+baseBoard(2, [
 				[ (1,0),(2,0),(2,0),(3,0),(1,0),(2,0) ],
 				[ (3,0),(1,0),(3,0),(1,0),(3,0),(2,0) ],
 				[ (2,0),(3,0),(1,0),(2,0),(1,0),(3,0) ],
@@ -18,7 +18,7 @@ baseBoard(2, [
 				[ (1,0),(3,0),(1,0),(3,0),(1,0),(2,0) ],
 				[ (3,0),(2,0),(2,0),(1,0),(3,0),(2,0) ]
 			]).
-baseBoard(3, [ 
+baseBoard(3, [
 				[ (3,0),(1,0),(2,0),(2,0),(3,0),(1,0) ],
 				[ (2,0),(3,0),(1,0),(3,0),(1,0),(2,0) ],
 				[ (2,0),(1,0),(3,0),(1,0),(3,0),(2,0) ],
@@ -26,8 +26,8 @@ baseBoard(3, [
 				[ (3,0),(1,0),(3,0),(1,0),(3,0),(1,0) ],
 				[ (2,0),(2,0),(1,0),(3,0),(2,0),(2,0) ]
 			]).
-baseBoard(4, [ 
-				[ (2,0),(3,0),(1,0),(2,0),(2,0),(3,0) ], 
+baseBoard(4, [
+				[ (2,0),(3,0),(1,0),(2,0),(2,0),(3,0) ],
 				[ (2,0),(1,0),(3,0),(1,0),(3,0),(1,0) ],
 				[ (1,0),(3,0),(2,0),(3,0),(1,0),(2,0) ],
 				[ (3,0),(1,0),(2,0),(1,0),(3,0),(2,0) ],
@@ -47,15 +47,15 @@ writeChoiceText(1) :- write("Homme vs Homme."), !.
 writeChoiceText(2) :- write("Homme vs IA."), !.
 writeChoiceText(3) :- write("IA vs IA."), !.
 
-/* 
-	Prédicats pour demander si on veut faire une partie 
+/*
+	Prédicats pour demander si on veut faire une partie
 	- 1) HOMME VS HOMME
 	- 2) HOMME VS ROBOT
 	- 3) ROBOT VS ROBOT
 */
 typeMatchMenuLoop :- repeat, typeMatchMenu, !.
 
-typeMatchMenu :- 
+typeMatchMenu :-
 	nl,
 	writeSeperator,
 	nl,
@@ -65,10 +65,10 @@ typeMatchMenu :-
 	write("Entrez un choix : "),
 	read(CHOICE), nl, writeChoice(CHOICE), nl.
 
-showBoard() :- baseBoard(1, Plat), showRows(Plat).
+showBoard :- baseBoard(1, Plat), showRows(1, Plat).
 
-showRows([]).
-showRows([T|Q]) :- showCells(T), nl, afficherLigne(Q).
+showRows(_, []).
+showRows(numLigne, [T|Q]) :- write(numLigne), N is numLigne + 1, showCells(T), nl, showRows(N, Q).
 
 showCells([]).
 showCells([(1, 0)|Q]) :-  write("- "), showCells(Q), !.
