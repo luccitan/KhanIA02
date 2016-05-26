@@ -14,6 +14,16 @@
 element(X, [X|_]).
 element(X, [_|Q]) :- element(X,Q).
 
+/* 
+	concat(Liste1, Liste2, ListeResultat)
+	------------------------------
+	Prédicat qui unifie ListeResultat
+	avec la concaténation des listes Liste1 et Liste2
+*/
+concat([], L, L).
+concat(L, [], L).
+concat([T|Q], L2, [T|Res]) :- concat(Q, L2, Res).
+
 
 /* 
 	retire_element(X, L1, L2)
