@@ -20,3 +20,20 @@ initPlayer(PlayerColor, PlayerType, PlayerPieces) :-
 setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
 	retract(joueur(PlayerColor,_,_)),
 	asserta((joueur(PlayerColor, PlayerType, PlayerPieces))).
+
+/* 
+	initTableau(Tab)
+	------------------------------
+	Initialise le prédicat dynamique du tableau
+*/
+initTableau(Tab) :-
+	assertz(tableau(Tab)).
+
+/* 
+	setTableau(Tab)
+	------------------------------
+	Initialise le prédicat dynamique du tableau
+*/
+setTableau(Tab) :-
+	retract(tableau(_)),
+	assertz(tableau(Tab)).

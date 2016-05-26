@@ -36,12 +36,12 @@ baseBoard(4, [
 			]).
 
 
-/* Fonctions d'écritures */
+/* Prédicats d'écritures */
 
 writeSeperator :- write("---------").
-writeChoice(1) :- write("Vous avez choisi le choix '"), writeChoiceText(1), write("' !"), nl.
-writeChoice(2) :- write("Vous avez choisi le choix '"), writeChoiceText(2), write("' !"), nl.
-writeChoice(3) :- write("Vous avez choisi le choix '"), writeChoiceText(3), write("' !"), nl.
+writeChoice(1) :- write("Vous avez choisi le choix '"), writeChoiceText(1), write("' !"), nl, !.
+writeChoice(2) :- write("Vous avez choisi le choix '"), writeChoiceText(2), write("' !"), nl, !.
+writeChoice(3) :- write("Vous avez choisi le choix '"), writeChoiceText(3), write("' !"), nl, !.
 writeChoice(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
 writeChoiceText(1) :- write("Homme vs Homme."), !.
 writeChoiceText(2) :- write("Homme vs IA."), !.
@@ -53,7 +53,22 @@ writeChoiceText(3) :- write("IA vs IA."), !.
 	- 2) HOMME VS ROBOT
 	- 3) ROBOT VS ROBOT
 */
-typeMatchMenuLoop :- repeat, typeMatchMenu, !.
+
+triggerIAChoice(1) :-
+	writeChoice(1),
+	initPlayer(rouge, homme, []),
+	initPlayer(ocre, homme, []), !.
+triggerIAChoice(2) :-
+	writeChoice(1),
+	initPlayer(rouge, homme, []),
+	initPlayer(ocre, ia, []), !.
+triggerIAChoice(3) :-
+	writeChoice(1),
+	initPlayer(rouge, ia, []),
+	initPlayer(ocre, ia, []), !.
+triggerIAChoice(X) :- writeChoice(X).
+
+triggerMatchMenu :- repeat, typeMatchMenu, !.
 
 typeMatchMenu :-
 	nl,
@@ -63,11 +78,11 @@ typeMatchMenu :-
 	write("2. - "),writeChoiceText(2), nl,
 	write("3. - "),writeChoiceText(3), nl,
 	write("Entrez un choix : "),
-	read(CHOICE), nl, writeChoice(CHOICE), nl.
+	read(CHOICE), nl, triggerIAChoice(CHOICE), nl.
 
 showBoard :- baseBoard(1, Plat), write("  "), showColumns(1), showRows(1, Plat).
 
-showColumns(N) :- N >6, nl, write("-----------------"), nl, !.
+showColumns(N) :- N>6, nl, write("-----------------"), nl, !.
 showColumns(N) :- write(" "), write(N), SubN is N + 1, showColumns(SubN).
 
 showRows(_, []) :- !.
