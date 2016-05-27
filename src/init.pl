@@ -47,6 +47,7 @@ writeChoiceText(1) :- write("Homme vs Homme."), !.
 writeChoiceText(2) :- write("Homme vs IA."), !.
 writeChoiceText(3) :- write("IA vs IA."), !.
 
+
 /*
 	Prédicats pour demander si on veut faire une partie
 	- 1) HOMME VS HOMME
