@@ -11,10 +11,10 @@
 	Sinon, il l'ajoute.
 */
 setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
-	retract(joueur(PlayerColor,_,_)),
-	asserta((joueur(PlayerColor, PlayerType, PlayerPieces))), !.
+	retract(player(PlayerColor,_,_)),
+	asserta((player(PlayerColor, PlayerType, PlayerPieces))), !.
 setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
-	asserta((joueur(PlayerColor, PlayerType, PlayerPieces))), !.
+	asserta((player(PlayerColor, PlayerType, PlayerPieces))), !.
 
 
 /* 
@@ -24,8 +24,8 @@ setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
 	Teste d'abord le retract si il y existe déjà un fait
 	Sinon, il l'ajoute.
 */
-setTableau(Tab) :-
-	retract(tableau(_)),
-	assertz(tableau(Tab)), !.
-setTableau(Tab) :-
-	assertz(tableau(Tab)).
+setBoard(Board) :-
+	retract(board(_)),
+	assertz(board(Board)), !.
+setBoard(Board) :-
+	assertz(board(Board)).
