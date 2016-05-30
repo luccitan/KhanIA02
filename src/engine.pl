@@ -29,13 +29,28 @@ testCell(X,Y, Res) :- baseBoard(1, Plat), getCell(X,Y, Plat, Res).
 		selon la puissance du movement
 	===
 */
+
+/* 
+	nextTo renvoie les différentes coordonnées posX et posY
+possibles d'une position à côté de celle de (X,Y)
+*/
 nextTo((X,Y), PosX, PosY) :-
 	X is PosX-1,Y is PosY, X>0, Y>0;
 	X is PosX,Y is PosY-1, X>0, Y>0;
 	X is PosX+1,Y is PosY, X>0, Y>0;
 	X is PosX,Y is PosY+1, X>0, Y>0.
 
+/* 
+getNeighbours insère dans Moves
+la liste des différentes possibilités retournées par nextTo
+sur (X,Y) grâce au prédicat setof
+*/
 getNeighbours((X,Y), Moves) :- setof(C, nextTo(C,X,Y), Moves).
+/* getNeighboursOfList renvoie une liste
+des différentes positions possibles en partant de PLUSIEURS positions
+--> Liste vide, as de possibilité de base 
+--> Sinon, on concatène les possibilités de la tête avec celles de la queue
+*/
 getNeighboursOfList([],[]).
 getNeighboursOfList([CoupleTete|QueueCouples], MovesTotaux) :-
 	getNeighbours(CoupleTete, MovesCouple),
