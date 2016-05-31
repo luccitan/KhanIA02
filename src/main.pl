@@ -21,10 +21,10 @@
 	--------------------------------------------------------------
 */
 
-:- include('tools.pl').
-:- include('init.pl').
-:- include('engine.pl').
 :- include('print.pl').
+:- include('tools.pl').
+:- include('engine.pl').
+:- include('init.pl').
 
 /* 
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)

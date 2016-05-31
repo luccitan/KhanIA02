@@ -47,31 +47,6 @@ baseBoard(4, [
 				[ (2,0),(1,0),(3,0),(2,0),(2,0),(1,0) ]
 			]).
 
-
-writeSeperator :- write("---------").
-
-/* 
-	writeChoice(N)
-	------------------------------
-	Affiche la confirmation de choix
-	de types de partie (Homme/IA vs Homme/IA)
-*/
-writeMatchChoiceTypeAlert(N) :- 
-	N>0, N<4, !,
-	write("Vous avez choisi le choix '"), writeChoiceText(N), write("' !"), nl.
-writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
-
-/* 
-	writeChoiceText(N)
-	------------------------------
-	Affiche le choix de la Nème
-	possibilité de match 
-*/
-writeMatchChoiceTypeText(1) :- write("Homme vs Homme."), !.
-writeMatchChoiceTypeText(2) :- write("Homme vs IA."), !.
-writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
-
-
 /* 
 	triggerIAChoice(N)
 	------------------------------
@@ -80,16 +55,16 @@ writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
 */
 triggerIAChoice(1) :-
 	writeMatchChoiceTypeAlert(1),
-	initPlayer(rouge, homme, []),
-	initPlayer(ocre, homme, []), !.
+	setPlayer(rouge, homme, []),
+	setPlayer(ocre, homme, []), !.
 triggerIAChoice(2) :-
 	writeMatchChoiceTypeAlert(2),
-	initPlayer(rouge, homme, []),
-	initPlayer(ocre, ia, []), !.
+	setPlayer(rouge, homme, []),
+	setPlayer(ocre, ia, []), !.
 triggerIAChoice(3) :-
 	writeMatchChoiceTypeAlert(3),
-	initPlayer(rouge, ia, []),
-	initPlayer(ocre, ia, []), !.
+	setPlayer(rouge, ia, []),
+	setPlayer(ocre, ia, []), !.
 triggerIAChoice(X) :- writeMatchChoiceTypeAlert(X).
 
 /* 
@@ -108,11 +83,10 @@ triggerMatchMenu :- repeat, typeMatchMenu, !.
 	et réagit en conséquence
 */
 typeMatchMenu :-
-	nl,
-	writeSeperator,
-	nl,
+	nl,	wSep(20), nl,
 	write("1. - "),writeMatchChoiceTypeText(1), nl,
 	write("2. - "),writeMatchChoiceTypeText(2), nl,
 	write("3. - "),writeMatchChoiceTypeText(3), nl,
+	wSep(20), nl,
 	write("Entrez un choix : "),
 	read(CHOICE), nl, triggerIAChoice(CHOICE), nl.
