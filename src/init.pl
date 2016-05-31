@@ -1,6 +1,18 @@
-/* --
-	Initialisation des plateaux de bases
-	--
+/*
+	=================================
+	init.pl
+	=================================
+	Ce fichier contient les différents prédicats
+	qui permettent d'initialiser les joueurs, leurs status,
+	le plateau et les pions
+	-------------------------------
+*/
+
+/* 
+	baseBoard(N, Board)
+	------------------------------
+	Unifie Board avec la Nème possibilité
+	de plateau initial
 */
 baseBoard(1, [
 				[ (2,0),(2,0),(3,0),(1,0),(2,0),(2,0) ],
@@ -36,64 +48,71 @@ baseBoard(4, [
 			]).
 
 
-/* Prédicats d'écritures */
-
 writeSeperator :- write("---------").
-writeChoice(1) :- write("Vous avez choisi le choix '"), writeChoiceText(1), write("' !"), nl, !.
-writeChoice(2) :- write("Vous avez choisi le choix '"), writeChoiceText(2), write("' !"), nl, !.
-writeChoice(3) :- write("Vous avez choisi le choix '"), writeChoiceText(3), write("' !"), nl, !.
-writeChoice(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
-writeChoiceText(1) :- write("Homme vs Homme."), !.
-writeChoiceText(2) :- write("Homme vs IA."), !.
-writeChoiceText(3) :- write("IA vs IA."), !.
 
-
-/*
-	Prédicats pour demander si on veut faire une partie
-	- 1) HOMME VS HOMME
-	- 2) HOMME VS ROBOT
-	- 3) ROBOT VS ROBOT
+/* 
+	writeChoice(N)
+	------------------------------
+	Affiche la confirmation de choix
+	de types de partie (Homme/IA vs Homme/IA)
 */
+writeMatchChoiceTypeAlert(N) :- 
+	N>0, N<4, !,
+	write("Vous avez choisi le choix '"), writeChoiceText(N), write("' !"), nl.
+writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
 
+/* 
+	writeChoiceText(N)
+	------------------------------
+	Affiche le choix de la Nème
+	possibilité de match 
+*/
+writeMatchChoiceTypeText(1) :- write("Homme vs Homme."), !.
+writeMatchChoiceTypeText(2) :- write("Homme vs IA."), !.
+writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
+
+
+/* 
+	triggerIAChoice(N)
+	------------------------------
+	Initialise le jeu selon le choix
+	du type de rencontre
+*/
 triggerIAChoice(1) :-
-	writeChoice(1),
+	writeMatchChoiceTypeAlert(1),
 	initPlayer(rouge, homme, []),
 	initPlayer(ocre, homme, []), !.
 triggerIAChoice(2) :-
-	writeChoice(1),
+	writeMatchChoiceTypeAlert(2),
 	initPlayer(rouge, homme, []),
 	initPlayer(ocre, ia, []), !.
 triggerIAChoice(3) :-
-	writeChoice(1),
+	writeMatchChoiceTypeAlert(3),
 	initPlayer(rouge, ia, []),
 	initPlayer(ocre, ia, []), !.
-triggerIAChoice(X) :- writeChoice(X).
+triggerIAChoice(X) :- writeMatchChoiceTypeAlert(X).
 
+/* 
+	triggerMatchMenu
+	------------------------------
+	Déclenche la boucle de menu de choix
+	de type de rencontre
+*/
 triggerMatchMenu :- repeat, typeMatchMenu, !.
 
+/* 
+	typeMatchMenu
+	------------------------------
+	Affiche le menu de choix de type de rencontre,
+	récupère l'entrée de l'utilisateur,
+	et réagit en conséquence
+*/
 typeMatchMenu :-
 	nl,
 	writeSeperator,
 	nl,
-	write("1. - "),writeChoiceText(1), nl,
-	write("2. - "),writeChoiceText(2), nl,
-	write("3. - "),writeChoiceText(3), nl,
+	write("1. - "),writeMatchChoiceTypeText(1), nl,
+	write("2. - "),writeMatchChoiceTypeText(2), nl,
+	write("3. - "),writeMatchChoiceTypeText(3), nl,
 	write("Entrez un choix : "),
 	read(CHOICE), nl, triggerIAChoice(CHOICE), nl.
-
-showBoard :- baseBoard(1, Plat), write("  "), showColumns(1), showRows(1, Plat).
-
-showColumns(N) :- N>6, nl, write("-----------------"), nl, !.
-showColumns(N) :- write(" "), write(N), SubN is N + 1, showColumns(SubN).
-
-showRows(_, []) :- !.
-showRows(NumLigne, [T|Q]) :- write(NumLigne), write("  "), N is NumLigne + 1, showCells(T), nl, showRows(N, Q).
-
-showCells([]).
-showCells([(1, 0)|Q]) :-  write("- "), showCells(Q), !.
-showCells([(2, 0)|Q]) :-  write("= "), showCells(Q), !.
-showCells([(3, 0)|Q]) :-  write("# "), showCells(Q), !.
-showCells([(_, 1)|Q]) :-  write("R "), showCells(Q), !.
-showCells([(_, 2)|Q]) :-  write("r "), showCells(Q), !.
-showCells([(_, 3)|Q]) :-  write("0 "), showCells(Q), !.
-showCells([(_, 4)|Q]) :-  write("o "), showCells(Q), !.

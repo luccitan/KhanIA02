@@ -1,15 +1,20 @@
 /*
-
-	- Structure de la liste de pions d'un joueur :
-			redPiecesList --> [(X1, Y1, s), (X2, Y2, s), (X3, Y3, k), (X4, Y4, s)]
-			ocrePiecesList --> [(X1, Y1, k), (X2, Y2, s), (X3, Y3, s)]
+	=================================
+	engine.pl
+	=================================
+	Ce fichier contient les différents prédicats
+	qui permettent de manipuler le plateau,
+	contient la partie IA :
+		- génération de mouvements possibles
+		- recherche de solutions optimales
+	-------------------------------
 */
 
+
 /*
-	=== /!\ Code pas forcément pertinent /!\ ===
-	Permet d'obtenir un tuple précis du plateau
-	grâce aux coordonnées en arguments
-	===
+	--------------------------------------------------------------
+	----------------------- PREDICATS ----------------------------
+	-------------------- ? TEMPORAIRES ? -------------------------
 */
 getRowFromBoard(1, [X|_], X) :- !.
 getRowFromBoard(R,[_|Q], Res) :- R2 is R-1, getRowFromBoard(R2, Q, Res).
@@ -24,15 +29,16 @@ getCell(X, Y, Plateau, Res) :-
 testCell(X,Y, Res) :- baseBoard(1, Plat), getCell(X,Y, Plat, Res).
 
 /*
-	=== 
-		Prédicats permettant d'obtenir les différentes positions atteignables
-		selon la puissance du movement
-	===
+	--------------------------------------------------------------
+	--------------------------------------------------------------
 */
 
 /* 
-	nextTo renvoie les différentes coordonnées posX et posY
-possibles d'une position à côté de celle de (X,Y)
+	nextTo(C, PosX, PosY)
+	------------------------------
+	Unifie PosX et PosY avec des coordonnées
+	voisines de celles de la position
+	de couple C
 */
 nextTo((X,Y), PosX, PosY) :-
 	X is PosX-1,Y is PosY, X>0, Y>0;
@@ -41,15 +47,18 @@ nextTo((X,Y), PosX, PosY) :-
 	X is PosX,Y is PosY+1, X>0, Y>0.
 
 /* 
-getNeighbours insère dans Moves
-la liste des différentes possibilités retournées par nextTo
-sur (X,Y) grâce au prédicat setof
+	getNeighbours(C, Moves)
+	------------------------------
+	Unifie Moves avec les différentes positions voisines
+	atteignables par la position de coordonnnées C
 */
 getNeighbours((X,Y), Moves) :- setof(C, nextTo(C,X,Y), Moves).
-/* getNeighboursOfList renvoie une liste
-des différentes positions possibles en partant de PLUSIEURS positions
---> Liste vide, as de possibilité de base 
---> Sinon, on concatène les possibilités de la tête avec celles de la queue
+
+/* 
+	getNeighboursOfList(ListeDeCouples, MovesTotaux)
+	------------------------------
+	Unifie MovesTotaux avec l'ensemble des positions atteignables
+	depuis les positions contenues dans ListeDeCouples
 */
 getNeighboursOfList([],[]).
 getNeighboursOfList([CoupleTete|QueueCouples], MovesTotaux) :-
@@ -57,6 +66,13 @@ getNeighboursOfList([CoupleTete|QueueCouples], MovesTotaux) :-
 	getNeighboursOfList(QueueCouples, MovesQueues),
 	concat(MovesCouple, MovesQueues, MovesTotaux).
 
+/* 
+	generateMoves(N, Couple, Res)
+	------------------------------
+	Unifie Res avec la liste des positions atteignables
+	depuis la position de coordonnées Couple,
+	en réalisant exactement N mouvements.
+*/
 generateMoves(1, C, Res) :- getNeighbours(C, Res), !.
 generateMoves(K, C, Res) :-
 	K2 is K-1,

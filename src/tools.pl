@@ -1,9 +1,13 @@
 /*
-	Ensemble de prédicats outils
-	qui ne découlent pas directement du projet, qui sont génériques
-	mais qui sont utiles à son utilisation
+	=================================
+	tools.pl
+	=================================
+	Ce fichier contient les différents prédicats
+	qui sont "externes" au projet mais qui sont utiles
+	d'une manière ou une autre
+	dans la manipulation des données
+	-------------------------------
 */
-
 
 /* 
 	element(X, L)
