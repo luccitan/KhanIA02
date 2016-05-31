@@ -41,7 +41,7 @@ writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
 	Affiche le contenu du plateau actuel
 */
 
-showBoard :- baseBoard(1, Plat), showColumns, showRows(1, Plat).
+showBoard :- board(Board), showColumns, showRows(1, Board).
 
 /* 
 	showColumns
@@ -83,10 +83,10 @@ writeSubRowLoop(_) :- nl.
 	Affiche le contenu de la Nème cellule d'une ligne
 */
 showCells([]).
-showCells([(1, 0)|Q]) :-  write(" - |"), showCells(Q), !.
-showCells([(2, 0)|Q]) :-  write(" = |"), showCells(Q), !.
-showCells([(3, 0)|Q]) :-  write(" # |"), showCells(Q), !.
-showCells([(_, 1)|Q]) :-  write(" R |"), showCells(Q), !.
-showCells([(_, 2)|Q]) :-  write(" r |"), showCells(Q), !.
-showCells([(_, 3)|Q]) :-  write(" O |"), showCells(Q), !.
-showCells([(_, 4)|Q]) :-  write(" o |"), showCells(Q), !.
+showCells([(1, vide)|Q]) :-  write(" - |"), showCells(Q), !.
+showCells([(2, vide)|Q]) :-  write(" + |"), showCells(Q), !.
+showCells([(3, vide)|Q]) :-  write(" # |"), showCells(Q), !.
+showCells([(_, kr)|Q]) :-  write(" R |"), showCells(Q), !.
+showCells([(_, sr)|Q]) :-  write(" r |"), showCells(Q), !.
+showCells([(_, ko)|Q]) :-  write(" 0 |"), showCells(Q), !.
+showCells([(_, so)|Q]) :-  write(" o |"), showCells(Q), !.

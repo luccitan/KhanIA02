@@ -26,6 +26,15 @@
 :- include('engine.pl').
 :- include('init.pl').
 
+board([
+				[ (2,vide),(2,ko),(3,vide),(1,so),(2,so),(2,so) ],
+				[ (1,vide),(3,vide),(1,vide),(3,vide),(1,vide),(3,vide) ],
+				[ (3,vide),(1,vide),(2,vide),(2,so),(3,vide),(1,vide) ],
+				[ (2,vide),(3,sr),(1,so),(3,sr),(1,vide),(2,vide) ],
+				[ (2,vide),(1,vide),(3,vide),(1,vide),(3,sr),(2,vide) ],
+				[ (1,vide),(3,kr),(2,sr),(2,sr),(1,vide),(3,vide) ]
+]).
+
 /* 
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)
 	------------------------------
