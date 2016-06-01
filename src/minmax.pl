@@ -1,7 +1,56 @@
 /*
-	=================================
-	========= FONCTION SCORE ========
-	=================================
+	=========================================
+	========= ALGORITHME MINMAX =============
+	=========================================
+*/
+
+/* 
+	boardsScore(BoardsList, BoardAndScoreList)
+	------------------------------
+	Associe dans une nouvelle liste BoardAndScoreList
+	un plateau et son score évalué
+*/
+boardsScore(_, [], []) :- !.
+boardsScore(PlayerSide, [X|Q], [(X,Score)|NextCouples]) :-
+	score(X, PlayerSide, Score),
+	boardsScore(PlayerSide, Q, NextCouples).
+
+/* 
+	minBoard(BoardsAndScoreList, Board)
+	------------------------------
+	Unifie MinBoardScoreTuple
+	avec le tuple (Board, Score) du plateau
+	avec le plus petit score
+*/
+minBoard([FirstBoard|Q], MinBoardScoreTuple) :-
+	minBoard(Q, FirstBoard, MinBoardScoreTuple).
+minBoard([], MinBoardScoreTuple, MinBoardScoreTuple) :- !.
+minBoard([(Brd,Scr)|Q], (_, LocalMinS), MinBoardScoreTuple) :-
+	Scr < LocalMinS, !,
+	minBoard(Q, (Brd,Scr), MinBoardScoreTuple).
+minBoard([_|Q], (LocalMinB, LocalMinS), MinBoardScoreTuple) :-
+	minBoard(Q, (LocalMinB,LocalMinS), MinBoardScoreTuple).
+
+/* 
+	maxBoard(BoardsAndScoreList, Board)
+	------------------------------
+	Unifie MaxBoardScoreTuple
+	avec le tuple (Board, Score) du plateau
+	avec le plus gros score
+*/
+maxBoard([FirstBoard|Q], MaxBoardScoreTuple) :-
+	maxBoard(Q, FirstBoard, MaxBoardScoreTuple).
+maxBoard([], MaxBoardScoreTuple, MaxBoardScoreTuple) :- !.
+maxBoard([(Brd,Scr)|Q], (_, LocalMaxS), MaxBoardScoreTuple) :-
+	Scr > LocalMaxS, !,
+	maxBoard(Q, (Brd,Scr), MaxBoardScoreTuple).
+maxBoard([_|Q], (LocalMaxB, LocalMaxS), MaxBoardScoreTuple) :-
+	maxBoard(Q, (LocalMaxB,LocalMaxS), MaxBoardScoreTuple).
+
+/*
+	=========================================
+	========= FONCTION SCORE ================
+	=========================================
 */
 /* 
 	score(Board, PlayerSide, Score)

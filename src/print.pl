@@ -35,12 +35,12 @@ writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix 
 writeMatchChoiceTypeText(1) :- write("Homme vs Homme."), !.
 writeMatchChoiceTypeText(2) :- write("Homme vs IA."), !.
 writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
+
 /* 
 	showBoard
 	------------------------------
 	Affiche le contenu du plateau actuel
 */
-
 showBoard :- board(Board), showColumns, showRows(1, Board).
 
 /* 
