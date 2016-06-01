@@ -65,3 +65,12 @@ retire_doublons([T|Q], [T|R]) :- retire_elements(T, Q, Res), retire_doublons(Res
 difference([],_,[]).
 difference([T|Q], L2, [T|Res]) :- \+element(T, L2), difference(Q, L2, Res), !.
 difference([T|Q], L2, Res) :- element(T,L2), difference(Q, L2, Res), !.
+
+/* 
+	longueur(L, Res)
+	------------------------------
+	Prédicat qui unifie Res
+	avec la longueur de la liste L
+*/
+longueur([], 0).
+longueur([_|Q], Res) :- longueur(Q, SubRes), Res is SubRes + 1.

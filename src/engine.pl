@@ -10,28 +10,49 @@
 	-------------------------------
 */
 
-
 /*
 	--------------------------------------------------------------
 	----------------------- PREDICATS ----------------------------
 	-------------------- ? TEMPORAIRES ? -------------------------
 */
-getRowFromBoard(1, [X|_], X) :- !.
-getRowFromBoard(R,[_|Q], Res) :- R2 is R-1, getRowFromBoard(R2, Q, Res).
+rowFromBoard(1, [X|_], X) :- !.
+rowFromBoard(R,[_|Q], Res) :- R2 is R-1, rowFromBoard(R2, Q, Res).
 
-getCellFromRow(1, [X|_], X) :- !.
-getCellFromRow(R, [_|Q], Res) :- R2 is R-1, getCellFromRow(R2, Q, Res).
+cellFromRow(1, [X|_], X) :- !.
+cellFromRow(R, [_|Q], Res) :- R2 is R-1, cellFromRow(R2, Q, Res).
 
-getCell(X, Y, Board, Res) :- 
-	getRowFromBoard(X, Board, RowRes),
-	getCellFromRow(Y, RowRes, Res).
+cell(X, Y, Board, Res) :- 
+	rowFromBoard(X, Board, RowRes),
+	cellFromRow(Y, RowRes, Res).
 
-testCell(X,Y, Res) :- board(Board), getCell(X,Y, Board, Res).
 
-/*
-	--------------------------------------------------------------
-	--------------------------------------------------------------
+/* 
+	positionKalista(Board,PlayerSide, Position)
+	------------------------------
+	Unifie Position avec la position du Kalista
+	côté PlayerSide grâce au Board.
+	Renvoie faux si la Kalista est morte
 */
+positionKalista([X|_], PlayerSide, Position) :-
+	subPositionKalista(X, PlayerSide, Position), !.
+positionKalista([_|Q], PlayerSide, (PosX, PosY)) :-
+	positionKalista(Q, PlayerSide, (PosX2, PosY)), PosX is PosX2 + 1.
+
+% sous-prédicat pour le prédicat "positionKalista"
+subPositionKalista([(_,ko)|_], ocre, (1,1)) :- !.
+subPositionKalista([(_,kr)|_], rouge, (1,1)) :- !.
+subPositionKalista([_|Q], PlayerSide, (PosX, PosY)) :-
+	subPositionKalista(Q, PlayerSide, (PosX, PosY2)), PosY is PosY2 + 1.
+
+
+/* 
+	enemyColor(X,Y)
+	------------------------------
+	Unifie X et Y avec les deux couleurs
+	antagonistes.
+*/
+enemyColor(rouge, ocre).
+enemyColor(ocre, rouge).
 
 /* 
 	nextTo(C, PosX, PosY, Board, Boolean)
@@ -62,8 +83,8 @@ nextTo((X,Y), PosX, PosY, _, false) :-
 	du plateau Board est vide ou contient un pion
 */
 emptyCell(X,Y,Board) :- 
-	getCell(X,Y,Board, (_, CellContent)),
-	CellContent = vide.
+	cell(X,Y,Board, (_, CellContent)),
+	CellContent = empty.
 
 /* 
 	getNeighbours(C, Moves)
