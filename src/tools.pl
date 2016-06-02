@@ -74,3 +74,12 @@ difference([T|Q], L2, Res) :- element(T,L2), difference(Q, L2, Res), !.
 	+ vérifier que le joueur reste bien dans les deux lignes allouées.
 */
 positionValide((V1, V2)) :- V1 >= 1, V1 =< 6, V2 >= 1, V2 =< 6.
+
+/*
+	longueur(L, Res)
+	------------------------------
+	Prédicat qui unifie Res
+	avec la longueur de la liste L
+*/
+longueur([], 0).
+longueur([_|Q], Res) :- longueur(Q, SubRes), Res is SubRes + 1.

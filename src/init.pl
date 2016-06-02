@@ -15,36 +15,36 @@
 	de plateau initial
 */
 baseBoard(1, [
-				[ (2,vide),(2,vide),(3,vide),(1,vide),(2,vide),(2,vide) ],
-				[ (1,vide),(3,vide),(1,vide),(3,vide),(1,vide),(3,vide) ],
-				[ (3,vide),(1,vide),(2,vide),(2,vide),(3,vide),(1,vide) ],
-				[ (2,vide),(3,vide),(1,vide),(3,vide),(1,vide),(2,vide) ],
-				[ (2,vide),(1,vide),(3,vide),(1,vide),(3,vide),(2,vide) ],
-				[ (1,vide),(3,vide),(2,vide),(2,vide),(1,vide),(3,vide) ]
+				[ (2,empty),(2,empty),(3,empty),(1,empty),(2,empty),(2,empty) ],
+				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
+				[ (3,empty),(1,empty),(2,empty),(2,empty),(3,empty),(1,empty) ],
+				[ (2,empty),(3,empty),(1,empty),(3,empty),(1,empty),(2,empty) ],
+				[ (2,empty),(1,empty),(3,empty),(1,empty),(3,empty),(2,empty) ],
+				[ (1,empty),(3,empty),(2,empty),(2,empty),(1,empty),(3,empty) ]
 			]).
 baseBoard(2, [
-				[ (1,vide),(2,vide),(2,vide),(3,vide),(1,vide),(2,vide) ],
-				[ (3,vide),(1,vide),(3,vide),(1,vide),(3,vide),(2,vide) ],
-				[ (2,vide),(3,vide),(1,vide),(2,vide),(1,vide),(3,vide) ],
-				[ (2,vide),(1,vide),(3,vide),(2,vide),(3,vide),(1,vide) ],
-				[ (1,vide),(3,vide),(1,vide),(3,vide),(1,vide),(2,vide) ],
-				[ (3,vide),(2,vide),(2,vide),(1,vide),(3,vide),(2,vide) ]
+				[ (1,empty),(2,empty),(2,empty),(3,empty),(1,empty),(2,empty) ],
+				[ (3,empty),(1,empty),(3,empty),(1,empty),(3,empty),(2,empty) ],
+				[ (2,empty),(3,empty),(1,empty),(2,empty),(1,empty),(3,empty) ],
+				[ (2,empty),(1,empty),(3,empty),(2,empty),(3,empty),(1,empty) ],
+				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(2,empty) ],
+				[ (3,empty),(2,empty),(2,empty),(1,empty),(3,empty),(2,empty) ]
 			]).
 baseBoard(3, [
-				[ (3,vide),(1,vide),(2,vide),(2,vide),(3,vide),(1,vide) ],
-				[ (2,vide),(3,vide),(1,vide),(3,vide),(1,vide),(2,vide) ],
-				[ (2,vide),(1,vide),(3,vide),(1,vide),(3,vide),(2,vide) ],
-				[ (1,vide),(3,vide),(2,vide),(2,vide),(1,vide),(3,vide) ],
-				[ (3,vide),(1,vide),(3,vide),(1,vide),(3,vide),(1,vide) ],
-				[ (2,vide),(2,vide),(1,vide),(3,vide),(2,vide),(2,vide) ]
+				[ (3,empty),(1,empty),(2,empty),(2,empty),(3,empty),(1,empty) ],
+				[ (2,empty),(3,empty),(1,empty),(3,empty),(1,empty),(2,empty) ],
+				[ (2,empty),(1,empty),(3,empty),(1,empty),(3,empty),(2,empty) ],
+				[ (1,empty),(3,empty),(2,empty),(2,empty),(1,empty),(3,empty) ],
+				[ (3,empty),(1,empty),(3,empty),(1,empty),(3,empty),(1,empty) ],
+				[ (2,empty),(2,empty),(1,empty),(3,empty),(2,empty),(2,empty) ]
 			]).
 baseBoard(4, [
-				[ (2,vide),(3,vide),(1,vide),(2,vide),(2,vide),(3,vide) ],
-				[ (2,vide),(1,vide),(3,vide),(1,vide),(3,vide),(1,vide) ],
-				[ (1,vide),(3,vide),(2,vide),(3,vide),(1,vide),(2,vide) ],
-				[ (3,vide),(1,vide),(2,vide),(1,vide),(3,vide),(2,vide) ],
-				[ (2,vide),(3,vide),(1,vide),(3,vide),(1,vide),(3,vide) ],
-				[ (2,vide),(1,vide),(3,vide),(2,vide),(2,vide),(1,vide) ]
+				[ (2,empty),(3,empty),(1,empty),(2,empty),(2,empty),(3,empty) ],
+				[ (2,empty),(1,empty),(3,empty),(1,empty),(3,empty),(1,empty) ],
+				[ (1,empty),(3,empty),(2,empty),(3,empty),(1,empty),(2,empty) ],
+				[ (3,empty),(1,empty),(2,empty),(1,empty),(3,empty),(2,empty) ],
+				[ (2,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
+				[ (2,empty),(1,empty),(3,empty),(2,empty),(2,empty),(1,empty) ]
 			]).
 
 /*

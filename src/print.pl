@@ -35,12 +35,12 @@ writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix 
 writeMatchChoiceTypeText(1) :- write("Homme vs Homme."), !.
 writeMatchChoiceTypeText(2) :- write("Homme vs IA."), !.
 writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
+
 /* 
 	showBoard
 	------------------------------
 	Affiche le contenu du plateau actuel
 */
-
 showBoard :- board(Board), showColumns, showRows(1, Board).
 
 /* 
@@ -83,9 +83,9 @@ writeSubRowLoop(_) :- nl.
 	Affiche le contenu de la Nème cellule d'une ligne
 */
 showCells([]).
-showCells([(1, vide)|Q]) :-  write(" - |"), showCells(Q), !.
-showCells([(2, vide)|Q]) :-  write(" + |"), showCells(Q), !.
-showCells([(3, vide)|Q]) :-  write(" # |"), showCells(Q), !.
+showCells([(1, empty)|Q]) :-  write(" - |"), showCells(Q), !.
+showCells([(2, empty)|Q]) :-  write(" = |"), showCells(Q), !.
+showCells([(3, empty)|Q]) :-  write(" # |"), showCells(Q), !.
 showCells([(_, kr)|Q]) :-  write(" R |"), showCells(Q), !.
 showCells([(_, sr)|Q]) :-  write(" r |"), showCells(Q), !.
 showCells([(_, ko)|Q]) :-  write(" 0 |"), showCells(Q), !.

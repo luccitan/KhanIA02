@@ -14,10 +14,10 @@
 	----------------------- TEMPORAIRES --------------------------
 
 	- Structure de la liste de pions d'un joueur :
-			redPiecesList --> [(X1, Y1, s), (X2, Y2, s), (X3, Y3, k), (X4, Y4, s)]
-			ocrePiecesList --> [(X1, Y1, k), (X2, Y2, s), (X3, Y3, s)]
+			redPiecesList --> [(s, X1, Y1), (s, X2, Y2), (k, X3, Y3), (s, X4, Y4)]
+			ocrePiecesList --> [(k, X1, Y1), (s, X2, Y2), (s, X3, Y3)]
 
-	--------------------------------------------------------------
+	---------------------------------(-----------------------------
 	--------------------------------------------------------------
 */
 
@@ -25,15 +25,19 @@
 :- include('tools.pl').
 :- include('engine.pl').
 :- include('init.pl').
+:- include('minmax.pl').
 
 board([
-				[ (2,vide),(2,ko),(3,vide),(1,so),(2,so),(2,so) ],
-				[ (1,vide),(3,vide),(1,vide),(3,vide),(1,vide),(3,vide) ],
-				[ (3,vide),(1,vide),(2,vide),(2,so),(3,vide),(1,vide) ],
-				[ (2,vide),(3,sr),(1,so),(3,sr),(1,vide),(2,vide) ],
-				[ (2,vide),(1,vide),(3,vide),(1,vide),(3,sr),(2,vide) ],
-				[ (1,vide),(3,kr),(2,sr),(2,sr),(1,vide),(3,vide) ]
+				[ (2,empty),(2,empty),(3,ko),(1,so),(2,so),(2,so) ],
+				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
+				[ (3,empty),(1,empty),(2,empty),(2,so),(3,empty),(1,empty) ],
+				[ (2,empty),(3,sr),(1,so),(3,sr),(1,empty),(2,empty) ],
+				[ (2,empty),(1,empty),(3,sr),(1,empty),(3,empty),(2,empty) ],
+				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
 ]).
+
+joueur(ocre, homme, [(ko,1,2), (so, 3,3)]).
+joueur(rouge, ia, [(so,2,2)]).
 
 /* 
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)
