@@ -8,7 +8,7 @@
 	-------------------------------
 */
 
-/* 
+/*
 	baseBoard(N, Board)
 	------------------------------
 	Unifie Board avec la Nème possibilité
@@ -47,7 +47,7 @@ baseBoard(4, [
 				[ (2,vide),(1,vide),(3,vide),(2,vide),(2,vide),(1,vide) ]
 			]).
 
-/* 
+/*
 	triggerIAChoice(N)
 	------------------------------
 	Initialise le jeu selon le choix
@@ -67,7 +67,7 @@ triggerIAChoice(3) :-
 	setPlayer(ocre, ia, []), !.
 triggerIAChoice(X) :- writeMatchChoiceTypeAlert(X).
 
-/* 
+/*
 	triggerMatchMenu
 	------------------------------
 	Déclenche la boucle de menu de choix
@@ -75,7 +75,7 @@ triggerIAChoice(X) :- writeMatchChoiceTypeAlert(X).
 */
 triggerMatchMenu :- repeat, typeMatchMenu, !.
 
-/* 
+/*
 	typeMatchMenu
 	------------------------------
 	Affiche le menu de choix de type de rencontre,
@@ -90,3 +90,20 @@ typeMatchMenu :-
 	wSep(20), nl,
 	write("Entrez un choix : "),
 	read(CHOICE), nl, triggerIAChoice(CHOICE), nl.
+
+/*
+Positionnement des pions sur le plateau
+A faire : ajouter type de pièce dans un tuple/3
+*/
+
+positioningMenu :- player(_, homme, _), player(_, homme, _), positioning(1, rouge), positioning(1, ocre), !.
+%positioningMenu :- player(_, homme, _), player(_, ia, _), positioning(1, rouge), positioningAuto(1, ocre), !.
+%positioningMenu :- player(_, ia, _), player(_, ia, _), positioningAuto(1, rouge), positioningAuto(1, ocre), !.
+
+positioning(6, _) :- !.
+positioning(N, PlayerType) :- repeat, nl, wSep(20), nl,
+								write("(joueur "), write(PlayerType), write(")"),
+								write("Position de la piece "),
+								write(N), M is N + 1, read(CHOICE), positionValide(CHOICE),
+								player(PlayerType, X, L), concat(L, [CHOICE], Res),
+								setPlayer(PlayerType, X, Res), positioning(M, PlayerType).
