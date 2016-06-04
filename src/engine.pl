@@ -25,7 +25,6 @@ cell(X, Y, Board, Res) :-
 	rowFromBoard(X, Board, RowRes),
 	cellFromRow(Y, RowRes, Res).
 
-
 /* 
 	positionKalista(Board,PlayerSide, Position)
 	------------------------------

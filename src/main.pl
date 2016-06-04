@@ -36,8 +36,9 @@ board([
 				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
 ]).
 
-joueur(ocre, homme, [(ko,1,2), (so, 3,3)]).
-joueur(rouge, ia, [(so,2,2)]).
+khan((1,3)).
+player(ocre, homme, [(ko,1,2), (so, 3,3)]).
+player(rouge, ia, [(so,2,2)]).
 
 /* 
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)
@@ -66,3 +67,16 @@ setBoard(Board) :-
 	assertz(board(Board)), !.
 setBoard(Board) :-
 	assertz(board(Board)).
+
+/* 
+	setKhan(Tab)
+	------------------------------
+	Modifie le prédicat dynamique du Khân
+	Teste d'abord le retract si il y existe déjà un fait
+	Sinon, il l'ajoute.
+*/
+setKhan(Khan) :-
+	retract(khan(_)),
+	assertz(khan(Khan)), !.
+setKhan(Khan) :-
+	assertz(khan(Khan)).
