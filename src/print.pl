@@ -94,12 +94,8 @@ showCells([Cell|Q], Khan, I, J) :-
 writeCell((1, empty),_,_,_) :- write(" - |"), !.
 writeCell((2, empty),_,_,_) :- write(" = |"), !.
 writeCell((3, empty),_,_,_) :- write(" # |"), !.
-writeCell((_,kr), (I,J), I, J) :- write("!R |"), !.
-writeCell((_,ko), (I,J), I, J) :- write("!O |"), !.
-writeCell((_,sr), (I,J), I, J) :- write("!r |"), !.
-writeCell((_,so), (I,J), I, J) :- write("!o |"), !.
-writeCell((_,kr),_,_,_) :- write(" R |"), !.
-writeCell((_,ko),_,_,_) :- write(" O |"), !.
+writeCell((_,kr),_,_,_) :- write("!R |"), !.
+writeCell((_,ko),_,_,_) :- write("!O |"), !.
 writeCell((_,sr),_,_,_) :- write(" r |"), !.
 writeCell((_,so),_,_,_) :- write(" o |"), !.
 

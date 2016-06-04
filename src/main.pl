@@ -27,15 +27,6 @@
 :- include('init.pl').
 :- include('minmax.pl').
 
-board([
-				[ (2,empty),(2,empty),(3,ko),(1,so),(2,so),(2,so) ],
-				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
-				[ (3,empty),(1,empty),(2,empty),(2,so),(3,empty),(1,empty) ],
-				[ (2,empty),(3,sr),(1,so),(3,sr),(1,empty),(2,empty) ],
-				[ (2,empty),(1,empty),(3,sr),(1,empty),(3,empty),(2,empty) ],
-				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
-]).
-
 khan((1,3)).
 player(ocre, homme, [(ko,1,2), (so, 3,3)]).
 player(rouge, ia, [(so,2,2)]).
@@ -80,3 +71,12 @@ setKhan(Khan) :-
 	assertz(khan(Khan)), !.
 setKhan(Khan) :-
 	assertz(khan(Khan)).
+
+:- setBoard([
+				[ (2,empty),(2,empty),(3,ko),(1,so),(2,so),(2,so) ],
+				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
+				[ (3,empty),(1,empty),(2,empty),(2,so),(3,empty),(1,empty) ],
+				[ (2,empty),(3,sr),(1,so),(3,sr),(1,empty),(2,empty) ],
+				[ (2,empty),(1,empty),(3,sr),(1,empty),(3,empty),(2,empty) ],
+				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
+]).

@@ -86,6 +86,31 @@ emptyCell(X,Y,Board) :-
 	CellContent = empty.
 
 /* 
+	modifyBoard(Board, CStart, CDest,BoardRes) 
+	------------------------------
+	Unifie BoardRes avec une version modifié de Board.
+	Dans cette version modifié, la potentielle pièce
+	aux coordonnées CStart est déplacée aux coordonnées
+	CDest
+*/
+modifyBoard(Board, (Xstart, Ystart), (Xend, Yend),BoardRes) :-
+	cell(Xstart, Ystart, Board, (CellPower,CellType)),
+	cell(Xend, Yend, Board, (TargetCellPower, _)),
+	setCell(Board, (CellPower, empty), (Xstart, Ystart), SubBoard),
+	setCell(SubBoard, (TargetCellPower, CellType), (Xend, Yend), BoardRes).
+
+setCell([X|Q], Cell, (1,J), [SubRes|Q]) :- 
+	setRowCell(X, Cell, J, SubRes), !.
+setCell([T|Q], Cell, (I,J), [T|SubRes]) :-
+	SubI is I - 1,
+	setCell(Q, Cell, (SubI, J), SubRes), !.
+
+setRowCell([_|Q], Cell, 1, [Cell|Q]) :- !.
+setRowCell([T|Q], Cell, J, [T|SubRow]) :-
+	SubJ is J - 1,
+	setRowCell(Q, Cell, SubJ, SubRow), !.
+
+/* 
 	getNeighbours(C, Moves)
 	------------------------------
 	Unifie Moves avec les différentes positions voisines
