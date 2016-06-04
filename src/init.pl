@@ -100,10 +100,44 @@ positioningMenu :- player(_, homme, _), player(_, homme, _), positioning(1, roug
 %positioningMenu :- player(_, homme, _), player(_, ia, _), positioning(1, rouge), positioningAuto(1, ocre), !.
 %positioningMenu :- player(_, ia, _), player(_, ia, _), positioningAuto(1, rouge), positioningAuto(1, ocre), !.
 
-positioning(6, _) :- !.
+positioning(7, _) :- !.
+positioning(6, PlayerType) :- repeat, nl, wSep(20), nl,
+								write("(joueur "), write(PlayerType), write(")"),
+								write("Position de la piece Kalista"),
+								M is 7, read(CHOICE), positionValide(CHOICE),
+								player(PlayerType, X, L),
+								writePieceIntoPlayer(PlayerType, kalista, L, CHOICE, Res),
+								setPlayer(PlayerType, X, Res), positioning(M, PlayerType).
+
 positioning(N, PlayerType) :- repeat, nl, wSep(20), nl,
 								write("(joueur "), write(PlayerType), write(")"),
-								write("Position de la piece "),
+								write("Position de la piece sbire "),
 								write(N), M is N + 1, read(CHOICE), positionValide(CHOICE),
-								player(PlayerType, X, L), concat(L, [CHOICE], Res),
+								player(PlayerType, X, L),
+								writePieceIntoPlayer(PlayerType, sbire, L, CHOICE, Res),
 								setPlayer(PlayerType, X, Res), positioning(M, PlayerType).
+
+
+writePieceIntoPlayer(rouge, sbire, L, CHOICE, Res) :- concat(L, [(sr,CHOICE)], Res).
+
+writePieceIntoPlayer(rouge, kalista, L, CHOICE, Res) :- concat(L, [(kr, CHOICE)], Res).
+
+writePieceIntoPlayer(ocre, sbire, L, CHOICE, Res) :- concat(L, [(so, CHOICE)], Res).
+
+writePieceIntoPlayer(ocre, kalista, L, CHOICE, Res) :- concat(L, [(ko, CHOICE)], Res).
+
+
+/*
+
+modificationPlateau((X,Y)) :- baseBoard(1, board), parcoursSousListe(board, (X,Y), 1).
+
+parcoursSousListe([T|Q], (X,Y), I) :- I = X, parcoursListe([T|Q], (X,Y), 1), !.
+parcoursSousListe([T|Q], (X,Y), I) :- I < X, K IS I + 1, parcousSousListe([T|Q], (X,Y), K).
+
+parcoursListe([T|Q], (X,Y), J) :- J = Y, modifierPosition(T), !.
+parcoursListe([T|Q], (X,Y), J) :- J < Y, L IS J + 1, parcoursListe([T|Q], (X,Y), L).
+
+
+modifierPosition((V1,V2)) :-
+
+*/
