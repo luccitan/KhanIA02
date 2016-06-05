@@ -24,8 +24,8 @@ element(X, [_|Q]) :- element(X,Q).
 	Prédicat qui unifie ListeResultat
 	avec la concaténation des listes Liste1 et Liste2
 */
-concat([], L, L).
-concat(L, [], L).
+concat([], L, L) :- !.
+concat(L, [], L) :- !.
 concat([T|Q], L2, [T|Res]) :- concat(Q, L2, Res).
 
 
@@ -34,7 +34,7 @@ concat([T|Q], L2, [T|Res]) :- concat(Q, L2, Res).
 	------------------------------
 	Prédicat qui déplace dans L2 la première occurence de l'élément X dans L
 */
-retire_element(_, [], []).
+retire_element(_, [], []) :- !.
 retire_element(X, [X|Q], Q) :- !.
 retire_element(X, [T|Q], [T|Res]) :- retire_element(X, Q, Res).
 
@@ -43,7 +43,7 @@ retire_element(X, [T|Q], [T|Res]) :- retire_element(X, Q, Res).
 	------------------------------
 	Prédicat qui déplace dans L2 TOUTES les occurences de l'élément X dans L
 */
-retire_elements(_, [], []).
+retire_elements(_, [], []) :- !.
 retire_elements(X, [X|Q], Res) :- retire_elements(X, Q, Res), !.
 retire_elements(X, [T|Q], [T|Res]) :- retire_elements(X,Q,Res).
 
@@ -53,7 +53,7 @@ retire_elements(X, [T|Q], [T|Res]) :- retire_elements(X,Q,Res).
 	Prédicat qui insère dans Res la liste L retirée de tous ses doublons
 	Res devient donc un 'ensemble'
 */
-retire_doublons([], []).
+retire_doublons([], []) :- !.
 retire_doublons([T|Q], [T|R]) :- retire_elements(T, Q, Res), retire_doublons(Res, R).
 
 /*

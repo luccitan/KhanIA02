@@ -77,6 +77,6 @@ setKhan(Khan) :-
 				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
 				[ (3,empty),(1,empty),(2,empty),(2,so),(3,empty),(1,empty) ],
 				[ (2,empty),(3,sr),(1,so),(3,sr),(1,empty),(2,empty) ],
-				[ (2,empty),(1,empty),(3,sr),(1,empty),(3,empty),(2,empty) ],
+				[ (2,empty),(1,empty),(3,empty),(1,sr),(3,empty),(2,empty) ],
 				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
 ]).
