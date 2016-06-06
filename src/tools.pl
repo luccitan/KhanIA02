@@ -59,12 +59,12 @@ retire_doublons([T|Q], [T|R]) :- retire_elements(T, Q, Res), retire_doublons(Res
 /*
 	difference(L1, L2, Res)
 	------------------------------
-	Prédicat qui retire les éléments de L2 présents dans L1
+	Prédicat qui retire les éléments de L1 présents dans L2
 	et met le résultat filtré dans Res
 */
-difference([],_,[]).
+difference([],_,[]) :- !.
 difference([T|Q], L2, [T|Res]) :- \+element(T, L2), difference(Q, L2, Res), !.
-difference([T|Q], L2, Res) :- element(T,L2), difference(Q, L2, Res), !.
+difference([_|Q], L2, Res) :- difference(Q, L2, Res), !.
 
 /*
 	positionValide((V1, V2))
