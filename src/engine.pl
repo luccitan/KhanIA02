@@ -128,8 +128,10 @@ nextTo(Xstart, Ystart,_,(Xres,Yres), false) :-
 	Unifie Moves avec les différentes positions voisines
 	atteignables par la position de coordonnnées C
 */
-neighbourPositions(Board, (X,Y), Moves, CheckEmpty) :- 
-	setof(C, nextTo(X,Y,Board,C, CheckEmpty), Moves).
+neighbourPositions(Board, (X,Y), Moves, CheckEmpty, History, NewHistory) :- 
+	setof(C, nextTo(X,Y,Board,C, CheckEmpty), SubMoves),
+	difference(SubMoves, History, Moves),
+	concat(History, Moves, NewHistory).
 
 
 /*
@@ -138,10 +140,10 @@ neighbourPositions(Board, (X,Y), Moves, CheckEmpty) :-
 	Unifie MovesTotaux avec l'ensemble des positions atteignables
 	depuis les positions contenues dans ListeDeCouples
 */
-neighbourPositionsFromList(_, [],[], _) :- !.
-neighbourPositionsFromList(Board, [CoupleTete|QueueCouples], MovesTotaux, CheckEmpty) :-
-	neighbourPositions(Board, CoupleTete, MovesCouple, CheckEmpty),
-	neighbourPositionsFromList(Board, QueueCouples, MovesQueues, CheckEmpty),
+neighbourPositionsFromList(_, [],[], _,History,History) :- !.
+neighbourPositionsFromList(Board, [CoupleTete|QueueCouples], MovesTotaux, CheckEmpty, History, FinalHistory) :-
+	neighbourPositions(Board, CoupleTete, MovesCouple, CheckEmpty, History, NewHistory),
+	neighbourPositionsFromList(Board, QueueCouples, MovesQueues, CheckEmpty, NewHistory, FinalHistory),
 	concat(MovesCouple, MovesQueues, MovesTotaux).
 
 
@@ -152,23 +154,20 @@ neighbourPositionsFromList(Board, [CoupleTete|QueueCouples], MovesTotaux, CheckE
 	depuis la position de coordonnées Couple,
 	en réalisant exactement N mouvements.
 */
-movesFrom(1, Board, C, Res) :- neighbourPositions(Board, C, Res, false), !.
+movesFrom(1, Board, C, Res) :- neighbourPositions(Board, C, Res, false, [C], _), !.
 movesFrom(K, Board, C, Res) :-
 	K2 is K-1,
-	subMovesFrom(K2, Board, C, MovesOne),
-	neighbourPositionsFromList(Board, MovesOne, MovesTwo, false),
-	retire_doublons(MovesTwo, ResWithNoDoubles),
-	retire_element(C, ResWithNoDoubles, SubRes),
-	friendPiecesFilter(C, Board, SubRes, Res).
+	subMovesFrom(K2, Board, C, MovesOne, [C], NewHistory),
+	neighbourPositionsFromList(Board, MovesOne, MovesTwo, false, NewHistory,_),
+	friendPiecesFilter(C, Board, MovesTwo, Res).
 
 
-subMovesFrom(1, Board, C, Res) :- neighbourPositions(Board, C, Res, true), !.
-subMovesFrom(K, Board, C, Res) :-
+subMovesFrom(1, Board, C, Res, History, NewHistory) :- 
+	neighbourPositions(Board, C, Res, true, History, NewHistory), !.
+subMovesFrom(K, Board, C, Res, History, FinalHistory) :-
 	K2 is K-1,
-	subMovesFrom(K2, Board, C, MovesOne),
-	neighbourPositionsFromList(Board, MovesOne, MovesTwo, true),
-	retire_doublons(MovesTwo, SubRes),
-	retire_element(C, SubRes, Res), !.
+	subMovesFrom(K2, Board, C, MovesOne, History, SubHistory),
+	neighbourPositionsFromList(Board, MovesOne, Res, true, SubHistory, FinalHistory), !.
 
 /*
 	friendPiecesFilter(C, Board, SubRes, Res)
