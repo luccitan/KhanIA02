@@ -13,22 +13,68 @@
 
 minMax(Board, PlayerSide, ResBoard) :-
 	%difficulty(Deepness),
-	minMax(Board, PlayerSide, 1, 1, ResBoard), !.
+	minMax(Board, PlayerSide, 2, 1, (ResBoard,_)), !.
 
-minMax(Board, PlayerSide, Deepness, Iteration, ResBoard) :-
-	Iteration = Deepness,
+minMax(Board, PlayerSide, Deepness, Iteration, ResBoardTuple) :-
+	Iteration = Deepness, !,
 	boardsFromBoard(Board, PlayerSide, BoardsList),
 	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
-	maxBoard(BoardsScoreList, (ResBoard,_)).
+	maxBoard(BoardsScoreList, ResBoardTuple).
+
+% Partie IA avec plus de profondeur dans l'algo MinMax
+
+/*
+minMax(Board, PlayerSide, Deepness, Iteration, ResBoardTuple) :-
+	SubIteration is Iteration + 1,
+	write("1 - minMax"), nl,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	write("2 - minMax"), nl,
+	minMaxScoreList(BoardsList, PlayerSide, Deepness, SubIteration, MinMaxScoreList),
+	write("3 - minMax"), nl,
+	maxBoard(MinMaxScoreList, ResBoardTuple).
+
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	Deepness = Iteration,
+	Iteration mod 2 = 1,
+	enemyColor(PlayerSide, EnemySide),
+	boardsFromBoard(Board, EnemySide, BoardsList),
+	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
+	minBoard(BoardsScoreList, (_, Score)), !.	
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	Deepness = Iteration,
+	write("--"), write(Iteration), write("--"), nl,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	write("2 - minMaxScore"), nl,
+	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
+	write("3 - minMaxScore"), nl,
+	maxBoard(BoardsScoreList, (_, Score)), !.
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	SubIteration is Iteration + 1,
+	Iteration mod 2 = 1,
+	enemyColor(PlayerSide, EnemySide),
+	boardsFromBoard(Board, EnemySide, BoardsList),
+	minMaxScoreList(BoardsList, PlayerSide, Deepness, SubIteration, MinMaxScoreList),
+	minBoard(MinMaxScoreList, (_,Score)), !.
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	SubIteration is Iteration + 1,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	minMaxScoreList(BoardsList, PlayerSide, Deepness, SubIteration, MinMaxScoreList),
+	maxBoard(MinMaxScoreList, (_,Score)), !.
+
+minMaxScoreList([],_,_,_,[]) :- !.
+minMaxScoreList([B1|BRest], PlayerSide, Deepness, Iteration, [(B1,Score)|Rest]) :-
+	minMaxScore(B1, PlayerSide, Deepness, Iteration, Score),
+	minMaxScoreList(BRest, PlayerSide, Deepness, Iteration, Rest).
 
 
 testMinMax(PlayerSide) :-
 	board(Board), khan(Khan),
 	minMax(Board, PlayerSide, ResBoard),
 	showColumns, showRows(1, ResBoard, Khan).
+*/
 
 /*
-	boardsFromboard(Board, piecesList, BoardsList)
+	boardsFromBoard(Board, piecesList, BoardsList)
 	------------------------------
 	Retourne la liste des plateaux accessibles depuis un coup
 	effectuée par le joueur de côté PlayerSide,

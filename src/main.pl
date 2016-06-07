@@ -73,7 +73,7 @@ setKhan(Khan) :-
 	assertz(khan(Khan)).
 
 /* 
-	setDifficulyy(difficulty)
+	setDifficulty(difficulty)
 	------------------------------
 	Modifie le prédicat dynamique de la difficulté
 */
