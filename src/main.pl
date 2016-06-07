@@ -72,6 +72,22 @@ setKhan(Khan) :-
 setKhan(Khan) :-
 	assertz(khan(Khan)).
 
+/* 
+	setDifficulyy(difficulty)
+	------------------------------
+	Modifie le prédicat dynamique de la difficulté
+*/
+setDifficulty(Difficulty) :-
+	correspDifficulty(Difficulty, Deepness),
+	retract(difficulty(_)), assertz(difficulty(Deepness)), !.
+setDifficulty(Difficulty) :-
+	correspDifficulty(Difficulty, Deepness),
+	assertz(difficulty(Deepness)).
+
+correspDifficulty(easy, 1).
+correspDifficulty(normal, 3).
+correspDifficulty(hard, 5).
+
 :- setBoard([
 				[ (2,empty),(2,empty),(3,ko),(1,so),(2,so),(2,so) ],
 				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
@@ -80,3 +96,5 @@ setKhan(Khan) :-
 				[ (2,empty),(1,empty),(3,empty),(1,sr),(3,empty),(2,empty) ],
 				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
 ]).
+
+:- setDifficulty(easy).

@@ -4,6 +4,52 @@
 	=========================================
 */
 
+/*
+	minMaxBoard, PlayerSide, ResBoard)
+	------------------------------
+	Unifie ResBoard avec le plateau optimal
+	selon l'algorithme MinMax
+*/
+
+minMax(Board, PlayerSide, ResBoard) :-
+	%difficulty(Deepness),
+	minMax(Board, PlayerSide, 1, 1, ResBoard), !.
+
+minMax(Board, PlayerSide, Deepness, Iteration, ResBoard) :-
+	Iteration = Deepness,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
+	maxBoard(BoardsScoreList, (ResBoard,_)).
+
+
+testMinMax(PlayerSide) :-
+	board(Board), khan(Khan),
+	minMax(Board, PlayerSide, ResBoard),
+	showColumns, showRows(1, ResBoard, Khan).
+
+/*
+	boardsFromboard(Board, piecesList, BoardsList)
+	------------------------------
+	Retourne la liste des plateaux accessibles depuis un coup
+	effectuée par le joueur de côté PlayerSide,
+	à partir de Board.
+*/
+boardsFromBoard(Board, PlayerSide, BoardsList) :-
+	piecesFromSide(Board, PlayerSide, PositionsList),
+	boardsFromPiecesList(Board, PositionsList, BoardsList).
+/*
+	boardsFromPiecesList(Board, piecesList, BoardsList)
+	------------------------------
+	Retourne la liste complète des plateaux que l'on peut obtenir
+	en partant d'une des pièces de piecesList
+*/
+boardsFromPiecesList(_, [], []) :- !.
+boardsFromPiecesList(Board, [P1|RestPieces], Res) :-
+	boardsFrom(3, Board, P1, SubRes1),
+	boardsFromPiecesList(Board, RestPieces, SubRes2),
+	concat(SubRes1, SubRes2, Res).
+
+	 
 /* 
 	boardsScore(BoardsList, BoardAndScoreList)
 	------------------------------
@@ -61,12 +107,14 @@ maxBoard([_|Q], (LocalMaxB, LocalMaxS), MaxBoardScoreTuple) :-
 */
 score(Board, PlayerSide, Score)	:- 
 	subScoreOwnKalistaDead(Board, PlayerSide, SC1),
+	SC1 = -10000, Score is SC1, !;
 	subScoreEnemyKalistaDead(Board, PlayerSide, SC2),
+	SC2 = 10000, Score is SC2, !;
 	subScoreLonelyKalista(Board, PlayerSide, SC3),
 	subScoreLessPiecesThanEnemy(Board, PlayerSide, SC4),
 	subScoreDistanceFromEnemyKalista(Board, PlayerSide, SC5),
 	subScoreNumberOfPower2(Board,PlayerSide, SC6),
-	Score is SC1+SC2+SC3+SC4+SC5+SC6.
+	Score is SC3+SC4+SC5+SC6.
 
 pieceFromColor((_,kr), rouge).
 pieceFromColor((_,sr), rouge).

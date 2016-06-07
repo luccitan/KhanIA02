@@ -10,48 +10,26 @@
 	-------------------------------
 */
 
-/*
-	--------------------------------------------------------------
-	----------------------- PREDICATS ----------------------------
-	-------------------- ? TEMPORAIRES ? -------------------------
-*/
-rowFromBoard(1, [X|_], X) :- !.
-rowFromBoard(R,[_|Q], Res) :- R2 is R-1, rowFromBoard(R2, Q, Res).
 
-cellFromRow(1, [X|_], X) :- !.
-cellFromRow(R, [_|Q], Res) :- R2 is R-1, cellFromRow(R2, Q, Res).
+piecesFromSide(Board, PlayerSide, Res) :-
+	piecesFromSide(Board, PlayerSide, Res, 1, 1).
 
-cell(X, Y, Board, Res) :- 
-	rowFromBoard(X, Board, RowRes),
-	cellFromRow(Y, RowRes, Res).
+piecesFromSide([],_, [],_,_) :- !.
+piecesFromSide([RowX|RowRest], PlayerSide, Res, X, Y) :-
+	SubX is X+1,
+	subPiecesFromSide(RowX, PlayerSide, SubRes1, X, 1),
+	piecesFromSide(RowRest, PlayerSide,SubRes2, SubX, Y),
+	concat(SubRes1, SubRes2, Res).
 
-/* 
-	positionKalista(Board,PlayerSide, Position)
-	------------------------------
-	Unifie Position avec la position du Kalista
-	côté PlayerSide grâce au Board.
-	Renvoie faux si la Kalista est morte
-*/
-positionKalista([X|_], PlayerSide, Position) :-
-	subPositionKalista(X, PlayerSide, Position), !.
-positionKalista([_|Q], PlayerSide, (PosX, PosY)) :-
-	positionKalista(Q, PlayerSide, (PosX2, PosY)), PosX is PosX2 + 1.
+subPiecesFromSide([],_, [],_,_) :- !.
+subPiecesFromSide( [(_,CellType)|CellRest], PlayerSide, [(X,Y)|Res], X, Y) :-
+	typeFromSide(CellType, PlayerSide),!,
+	SubY is Y + 1,
+	subPiecesFromSide(CellRest,PlayerSide, Res, X, SubY).
+subPiecesFromSide( [_|CellRest],PlayerSide, Res, X, Y) :-
+	SubY is Y + 1,
+	subPiecesFromSide(CellRest,PlayerSide, Res, X, SubY), !.
 
-% sous-prédicat pour le prédicat "positionKalista"
-subPositionKalista([(_,ko)|_], ocre, (1,1)) :- !.
-subPositionKalista([(_,kr)|_], rouge, (1,1)) :- !.
-subPositionKalista([_|Q], PlayerSide, (PosX, PosY)) :-
-	subPositionKalista(Q, PlayerSide, (PosX, PosY2)), PosY is PosY2 + 1.
-
-
-/* 
-	enemyColor(X,Y)
-	------------------------------
-	Unifie X et Y avec les deux couleurs
-	antagonistes.
-*/
-enemyColor(rouge, ocre).
-enemyColor(ocre, rouge).
 
 /* 
 	modifyBoard(Board, CStart, CDest,BoardRes) 
@@ -221,19 +199,3 @@ boardsFromPositions(_,_,[], []) :- !.
 boardsFromPositions(C, Board, [PosX|PosRest], [BoardRes|BoardsRest]) :-
 	modifyBoard(Board, C, PosX, BoardRes),
 	boardsFromPositions(C, Board, PosRest, BoardsRest).
-
-testBoardsFrom(StartPosition) :-
-	board(Board),
-	boardsFrom(3, Board, StartPosition, BoardsList),
-	testShow(BoardsList).
-
-testShow([]) :- !.
-testShow([X|Q]) :- 
-	khan(Khan), showColumns, showRows(1, X, Khan),
-	testShow(Q).
-
-test(C, Res) :-
-	board(Board),
-	movesFrom(3, Board, C, Res),
-	boardsFromPositions(C, Board, Res, Res2),
-	testShow(Res2).

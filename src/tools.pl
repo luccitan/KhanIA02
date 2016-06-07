@@ -3,14 +3,81 @@
 	tools.pl
 	=================================
 	Ce fichier contient les différents prédicats
-	qui sont "externes" au projet mais qui sont utiles
-	d'une manière ou une autre
-	dans la manipulation des données
+	qui sont utilisées de manière utilitaire au projet.
+	Ils peuvent être indépendants du projet ou alors
+	utiles pour de simples actions
+	(sélection de cellule, etc...)
 	-------------------------------
 */
 
+%   ==================================================================
+%	Prédicats dépendants du projet
+%	==================================================================
+
+/* 
+	positionKalista(Board,PlayerSide, Position)
+	------------------------------
+	Unifie Position avec la position du Kalista
+	côté PlayerSide grâce au Board.
+	Renvoie faux si la Kalista est morte
+*/
+positionKalista([X|_], PlayerSide, Position) :-
+	subPositionKalista(X, PlayerSide, Position), !.
+positionKalista([_|Q], PlayerSide, (PosX, PosY)) :-
+	positionKalista(Q, PlayerSide, (PosX2, PosY)), PosX is PosX2 + 1.
+
+% sous-prédicat pour le prédicat "positionKalista"
+subPositionKalista([(_,ko)|_], ocre, (1,1)) :- !.
+subPositionKalista([(_,kr)|_], rouge, (1,1)) :- !.
+subPositionKalista([_|Q], PlayerSide, (PosX, PosY)) :-
+	subPositionKalista(Q, PlayerSide, (PosX, PosY2)), PosY is PosY2 + 1.
+
+/* 
+	cell(X,Y, Board, Res)
+	------------------------------
+	Unifie Res avec le tuple présent dans le plateau
+	aux coordonnées (X,Y)
+*/
+cell(X, Y, Board, Res) :- 
+	rowFromBoard(X, Board, RowRes),
+	cellFromRow(Y, RowRes, Res).
+rowFromBoard(1, [X|_], X) :- !.
+rowFromBoard(R,[_|Q], Res) :- R2 is R-1, rowFromBoard(R2, Q, Res).
+
+cellFromRow(1, [X|_], X) :- !.
+cellFromRow(R, [_|Q], Res) :- R2 is R-1, cellFromRow(R2, Q, Res).
+
+typeFromSide(ko, ocre).
+typeFromSide(so, ocre).
+typeFromSide(kr, rouge).
+typeFromSide(sr, rouge).
+
+/* 
+	print(List)
+	------------------------------
+	Affiche la liste des tuples présents dans
+	dans List
+*/
 print([]) :- !.
-print([X|Q]) :- write("("), write(X),write(") "),m print(Q).
+print([X|Q]) :-
+	write("("),
+	write(X),
+	write(") "),
+	print(Q).
+
+/* 
+	enemyColor(X,Y)
+	------------------------------
+	Unifie X et Y avec les deux couleurs
+	antagonistes.
+*/
+enemyColor(rouge, ocre).
+enemyColor(ocre, rouge).
+
+%   ==================================================================
+%	Prédicats indépendants du projet
+%	==================================================================
+
 
 /*
 	element(X, L)
