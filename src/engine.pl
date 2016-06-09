@@ -10,26 +10,51 @@
 	-------------------------------
 */
 
+/* 
+	possibleMoves(Board, PlayerSide, PossibleMoves)
+	------------------------------
+	Unifie PossibleMoves avec la liste des moves possibles
+	par le joueur du camp PlayerSide à partir de Board.
 
-piecesFromSide(Board, PlayerSide, Res) :-
-	piecesFromSide(Board, PlayerSide, Res, 1, 1).
+	Les moves sont de la forme :
+		[(Xstart, Ystart), (Xend, Yend) ]
+*/
+possibleMoves(Board, PlayerSide, PossibleMoves) :-
+	powerOfCurrentKhan(Board, KhanPower),
+	possibleMoves(Board, Board, PlayerSide, (1,1), KhanPower, PossibleMoves),
+	PossibleMoves \= [], !.
+% KhanPower = 0 se traduit par une ignorance du Khan et donc possibilité de bouger
+% ce que l'on veut
+possibleMoves(Board, PlayerSide, PossibleMoves) :-
+	write("Khan trop restrictif, chaque piece est amovible ..."),
+	possibleMoves(Board, Board, PlayerSide, (1,1), 0, PossibleMoves).
 
-piecesFromSide([],_, [],_,_) :- !.
-piecesFromSide([RowX|RowRest], PlayerSide, Res, X, Y) :-
+possibleMoves(_, [],_,_,_,[]) :- !.
+possibleMoves(Board, [RowX|RowRest], PlayerSide, (X,Y), KhanPower, PossibleMoves) :-
 	SubX is X+1,
-	subPiecesFromSide(RowX, PlayerSide, SubRes1, X, 1),
-	piecesFromSide(RowRest, PlayerSide,SubRes2, SubX, Y),
-	concat(SubRes1, SubRes2, Res).
+	subPossibleMoves(Board, RowX, PlayerSide, (X,Y), KhanPower, SubRes1),
+	possibleMoves(Board, RowRest, PlayerSide,(SubX,Y),KhanPower, SubRes2),	
+	concat(SubRes1, SubRes2, PossibleMoves).
 
-subPiecesFromSide([],_, [],_,_) :- !.
-subPiecesFromSide( [(_,CellType)|CellRest], PlayerSide, [(X,Y)|Res], X, Y) :-
-	typeFromSide(CellType, PlayerSide),!,
+subPossibleMoves(_,[],_,_,_,[]) :- !.
+subPossibleMoves(Board, [(CellPower,CellType)|CellRest],PlayerSide,(X,Y),0, PossibleMoves) :-
+	typeFromSide(CellType, PlayerSide),
+	movesFrom(CellPower,Board, (X,Y), PossibleMovesFirst),
 	SubY is Y + 1,
-	subPiecesFromSide(CellRest,PlayerSide, Res, X, SubY).
-subPiecesFromSide( [_|CellRest],PlayerSide, Res, X, Y) :-
+	subPossibleMoves(Board, CellRest, PlayerSide, (X,SubY), 0, PossibleMovesRest),
+	concat(PossibleMovesFirst, PossibleMovesRest, PossibleMoves).
+subPossibleMoves(Board, [(CellPower,CellType)|CellRest],PlayerSide, (X,Y),KhanPower, PossibleMoves) :-
+	typeFromSide(CellType, PlayerSide),
+	% Vérification autour du Khan
+	CellPower = KhanPower, !,
+	% Récupération des moves depuis cette position
+	movesFrom(KhanPower,Board, (X,Y), PossibleMovesFirst),
 	SubY is Y + 1,
-	subPiecesFromSide(CellRest,PlayerSide, Res, X, SubY), !.
-
+	subPossibleMoves(Board, CellRest, PlayerSide, (X,SubY), KhanPower, PossibleMovesRest),
+	concat(PossibleMovesFirst, PossibleMovesRest, PossibleMoves).
+subPossibleMoves(Board,[_|CellRest],PlayerSide,(X,Y), KhanPower, Res) :-
+	SubY is Y + 1,
+	subPossibleMoves(Board, CellRest,PlayerSide, (X, SubY), KhanPower, Res), !.
 
 /* 
 	modifyBoard(Board, CStart, CDest,BoardRes) 
@@ -106,8 +131,8 @@ nextTo(Xstart, Ystart,_,(Xres,Yres), false) :-
 	Unifie Moves avec les différentes positions voisines
 	atteignables par la position de coordonnnées C
 */
-neighbourPositions(Board, (X,Y), Moves, CheckEmpty, History, NewHistory) :- 
-	setof(C, nextTo(X,Y,Board,C, CheckEmpty), SubMoves),
+neighbourPositions(Board, (X,Y), Moves, CheckEmpty, History, NewHistory) :-
+	findall(C, nextTo(X,Y,Board,C, CheckEmpty), SubMoves),
 	difference(SubMoves, History, Moves),
 	concat(History, Moves, NewHistory).
 
@@ -125,26 +150,36 @@ neighbourPositionsFromList(Board, [CoupleTete|QueueCouples], MovesTotaux, CheckE
 	concat(MovesCouple, MovesQueues, MovesTotaux).
 
 
+movesFrom(K, Board, C, MovesFrom) :-
+	positionsFrom(K, Board, C, PositionsFrom),
+	subMovesFrom(C, PositionsFrom, MovesFrom).
+
+subMovesFrom(_,[],[]) :- !.
+subMovesFrom(C, [Pos|RestPos], [[C, Pos]|RestMoves]) :-
+	subMovesFrom(C, RestPos, RestMoves).
+	
 /*
-	movesFrom(N, Board, Couple, Res)
+	positionsFrom(K, Board, Couple, Res)
 	------------------------------
 	Unifie Res avec la liste des positions atteignables
 	depuis la position de coordonnées Couple,
-	en réalisant exactement N mouvements.
+	en réalisant exactement K mouvements.
 */
-movesFrom(1, Board, C, Res) :- neighbourPositions(Board, C, Res, false, [C], _), !.
-movesFrom(K, Board, C, Res) :-
+positionsFrom(1, Board, C, Res) :- 
+	neighbourPositions(Board, C, SubRes, false, [C], _), 
+	friendPiecesFilter(C, Board, SubRes, Res), !.
+positionsFrom(K, Board, C, Res) :-
 	K2 is K-1,
-	subMovesFrom(K2, Board, C, MovesOne, [C], NewHistory),
+	subPositionsFrom(K2, Board, C, MovesOne, [C], NewHistory),
 	neighbourPositionsFromList(Board, MovesOne, MovesTwo, false, NewHistory,_),
 	friendPiecesFilter(C, Board, MovesTwo, Res).
 
 
-subMovesFrom(1, Board, C, Res, History, NewHistory) :- 
+subPositionsFrom(1, Board, C, Res, History, NewHistory) :- 
 	neighbourPositions(Board, C, Res, true, History, NewHistory), !.
-subMovesFrom(K, Board, C, Res, History, FinalHistory) :-
+subPositionsFrom(K, Board, C, Res, History, FinalHistory) :-
 	K2 is K-1,
-	subMovesFrom(K2, Board, C, MovesOne, History, SubHistory),
+	subPositionsFrom(K2, Board, C, MovesOne, History, SubHistory),
 	neighbourPositionsFromList(Board, MovesOne, Res, true, SubHistory, FinalHistory), !.
 
 /*
@@ -154,11 +189,11 @@ subMovesFrom(K, Board, C, Res, History, FinalHistory) :-
 	depuis C, retirée des positions avec pièces amis de C
 */
 friendPiecesFilter((X,Y), Board, SubRes, Res) :-
-	cell(X,Y, Board, (_,StartType)), StartType = ko,
+	cell(X,Y, Board, (_,StartType)), StartType = ko, !,
 	subFriendPiecesFilter(Board, SubRes, ocre, Res);
-	cell(X,Y, Board, (_, StartType)), StartType = so,
+	cell(X,Y, Board, (_, StartType)), StartType = so, !,
 	subFriendPiecesFilter(Board, SubRes, ocre, Res);
-	cell(X,Y, Board, (_, StartType)), StartType = kr,
+	cell(X,Y, Board, (_, StartType)), StartType = kr, !,
 	subFriendPiecesFilter(Board, SubRes, rouge, Res);
 	cell(X,Y, Board, (_,StartType)), StartType = sr,
 	subFriendPiecesFilter(Board, SubRes, rouge, Res).
@@ -199,3 +234,7 @@ boardsFromPositions(_,_,[], []) :- !.
 boardsFromPositions(C, Board, [PosX|PosRest], [BoardRes|BoardsRest]) :-
 	modifyBoard(Board, C, PosX, BoardRes),
 	boardsFromPositions(C, Board, PosRest, BoardsRest).
+
+powerOfCurrentKhan(Board, PowerOfCurrentKhan) :-
+	khan((XKhan,YKhan)),
+	cell(XKhan, YKhan, Board, (PowerOfCurrentKhan, _)).

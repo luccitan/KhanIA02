@@ -27,7 +27,6 @@
 :- include('init.pl').
 :- include('minmax.pl').
 
-khan((1,3)).
 player(ocre, homme, [(ko,1,2), (so, 3,3)]).
 player(rouge, ia, [(so,2,2)]).
 
@@ -85,16 +84,20 @@ setDifficulty(Difficulty) :-
 	assertz(difficulty(Deepness)).
 
 correspDifficulty(easy, 1).
-correspDifficulty(normal, 3).
-correspDifficulty(hard, 5).
+correspDifficulty(normal, 2).
+correspDifficulty(hard, 3).
 
 :- setBoard([
 				[ (2,empty),(2,empty),(3,ko),(1,so),(2,so),(2,so) ],
-				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
+				[ (1,empty),(3,empty),(1,empty),(3,so),(1,empty),(3,empty) ],
 				[ (3,empty),(1,empty),(2,empty),(2,so),(3,empty),(1,empty) ],
-				[ (2,empty),(3,sr),(1,so),(3,sr),(1,empty),(2,empty) ],
+				[ (2,empty),(3,empty),(1,empty),(3,sr),(1,empty),(2,empty) ],
 				[ (2,empty),(1,empty),(3,empty),(1,sr),(3,empty),(2,empty) ],
 				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
 ]).
 
+:- setKhan((1,4)).
 :- setDifficulty(easy).
+
+% Aide débuggage
+:- set_prolog_flag(answer_write_options,[max_depth(0)]).

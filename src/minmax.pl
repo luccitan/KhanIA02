@@ -9,17 +9,27 @@
 	------------------------------
 	Unifie ResBoard avec le plateau optimal
 	selon l'algorithme MinMax
+
+	BestMove de la forme
+	( (Xstart, Ystart), (Xend, Yend) )
 */
 
-minMax(Board, PlayerSide, ResBoard) :-
-	%difficulty(Deepness),
-	minMax(Board, PlayerSide, 2, 1, (ResBoard,_)), !.
+generateMove(Board, PlayerSide, BestMoveScoreTuple) :-
+	difficulty(Deepness),
+	minMax(Board, PlayerSide, Deepness, 1, (BestMoveScoreTuple,_)).
 
-minMax(Board, PlayerSide, Deepness, Iteration, ResBoardTuple) :-
-	Iteration = Deepness, !,
-	boardsFromBoard(Board, PlayerSide, BoardsList),
-	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
-	maxBoard(BoardsScoreList, ResBoardTuple).
+minMax(Board, PlayerSide, Deepness, Iteration, BestMoveTuple) :-
+	Iteration = Deepness,
+	possibleMoves(Board, PlayerSide, MovesList),
+	movesScore(PlayerSide, Board, MovesList, MovesScoreList),
+	maxMove(MovesScoreList, BestMoveTuple), !.
+
+testGenerateMoves(PlayerSide) :-
+	board(Board),
+	generateMove(Board, PlayerSide, [Cstart, Cend]),
+	modifyBoard(Board, Cstart, Cend, ResBoard),
+	khan(Khan),
+	showColumns, showRows(1, ResBoard, Khan).
 
 % Partie IA avec plus de profondeur dans l'algo MinMax
 
@@ -74,16 +84,6 @@ testMinMax(PlayerSide) :-
 */
 
 /*
-	boardsFromBoard(Board, piecesList, BoardsList)
-	------------------------------
-	Retourne la liste des plateaux accessibles depuis un coup
-	effectuée par le joueur de côté PlayerSide,
-	à partir de Board.
-*/
-boardsFromBoard(Board, PlayerSide, BoardsList) :-
-	piecesFromSide(Board, PlayerSide, PositionsList),
-	boardsFromPiecesList(Board, PositionsList, BoardsList).
-/*
 	boardsFromPiecesList(Board, piecesList, BoardsList)
 	------------------------------
 	Retourne la liste complète des plateaux que l'on peut obtenir
@@ -95,17 +95,19 @@ boardsFromPiecesList(Board, [P1|RestPieces], Res) :-
 	boardsFromPiecesList(Board, RestPieces, SubRes2),
 	concat(SubRes1, SubRes2, Res).
 
-	 
+	
+% movesScore(PlayerSide, Board, MovesList, MovesScoreList)
 /* 
 	boardsScore(BoardsList, BoardAndScoreList)
 	------------------------------
 	Associe dans une nouvelle liste BoardAndScoreList
 	un plateau et son score évalué
 */
-boardsScore(_, [], []) :- !.
-boardsScore(PlayerSide, [X|Q], [(X,Score)|NextCouples]) :-
-	score(X, PlayerSide, Score),
-	boardsScore(PlayerSide, Q, NextCouples).
+movesScore(_, _, [], []) :- !.
+movesScore(PlayerSide, Board, [[Cstart,Cend]|Q],[([Cstart,Cend],Score)|NextCouples]) :-
+	modifyBoard(Board, Cstart, Cend, BoardRes),
+	score(BoardRes, PlayerSide, Score),
+	movesScore(PlayerSide, Board, Q, NextCouples).
 
 /* 
 	minBoard(BoardsAndScoreList, Board)
@@ -114,14 +116,14 @@ boardsScore(PlayerSide, [X|Q], [(X,Score)|NextCouples]) :-
 	avec le tuple (Board, Score) du plateau
 	avec le plus petit score
 */
-minBoard([FirstBoard|Q], MinBoardScoreTuple) :-
-	minBoard(Q, FirstBoard, MinBoardScoreTuple).
-minBoard([], MinBoardScoreTuple, MinBoardScoreTuple) :- !.
-minBoard([(Brd,Scr)|Q], (_, LocalMinS), MinBoardScoreTuple) :-
+minMove([FirstMove|Q], MinMoveScoreTuple) :-
+	minMove(Q, FirstMove, MinMoveScoreTuple).
+minMove([], MinMoveScoreTuple, MinMoveScoreTuple) :- !.
+minMove([(Move,Scr)|Q], (_, LocalMinS), MinMoveScoreTuple) :-
 	Scr < LocalMinS, !,
-	minBoard(Q, (Brd,Scr), MinBoardScoreTuple).
-minBoard([_|Q], (LocalMinB, LocalMinS), MinBoardScoreTuple) :-
-	minBoard(Q, (LocalMinB,LocalMinS), MinBoardScoreTuple).
+	minMove(Q, (Move,Scr), MinMoveScoreTuple).
+minMove([_|Q], (LocalMinB, LocalMinS), MinMoveScoreTuple) :-
+	minMove(Q, (LocalMinB,LocalMinS), MinMoveScoreTuple).
 
 /* 
 	maxBoard(BoardsAndScoreList, Board)
@@ -130,14 +132,14 @@ minBoard([_|Q], (LocalMinB, LocalMinS), MinBoardScoreTuple) :-
 	avec le tuple (Board, Score) du plateau
 	avec le plus gros score
 */
-maxBoard([FirstBoard|Q], MaxBoardScoreTuple) :-
-	maxBoard(Q, FirstBoard, MaxBoardScoreTuple).
-maxBoard([], MaxBoardScoreTuple, MaxBoardScoreTuple) :- !.
-maxBoard([(Brd,Scr)|Q], (_, LocalMaxS), MaxBoardScoreTuple) :-
+maxMove([FirstMove|Q], MaxMoveScoreTuple) :-
+	maxMove(Q, FirstMove, MaxMoveScoreTuple).
+maxMove([], MaxMoveScoreTuple, MaxMoveScoreTuple) :- !.
+maxMove([(Move,Scr)|Q], (_, LocalMaxS), MaxMoveScoreTuple) :-
 	Scr > LocalMaxS, !,
-	maxBoard(Q, (Brd,Scr), MaxBoardScoreTuple).
-maxBoard([_|Q], (LocalMaxB, LocalMaxS), MaxBoardScoreTuple) :-
-	maxBoard(Q, (LocalMaxB,LocalMaxS), MaxBoardScoreTuple).
+	maxMove(Q, (Move,Scr), MaxMoveScoreTuple).
+maxMove([_|Q], (LocalMaxB, LocalMaxS), MaxMoveScoreTuple) :-
+	maxMove(Q, (LocalMaxB,LocalMaxS), MaxMoveScoreTuple).
 
 /*
 	=========================================
