@@ -27,11 +27,14 @@
 :- include('init.pl').
 :- include('minmax.pl').
 
+
 khan((1,3)).
+/*
 player(ocre, homme, [(ko,1,2), (so, 3,3)]).
 player(rouge, ia, [(so,2,2)]).
+*/
 
-/* 
+/*
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)
 	------------------------------
 	Modifie le prédicat existant dynamique "joueur" de type "PlayerColor"
@@ -46,7 +49,7 @@ setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
 	asserta((player(PlayerColor, PlayerType, PlayerPieces))), !.
 
 
-/* 
+/*
 	setTableau(Tab)
 	------------------------------
 	Modifie le prédicat dynamique du tableau
@@ -59,7 +62,7 @@ setBoard(Board) :-
 setBoard(Board) :-
 	assertz(board(Board)).
 
-/* 
+/*
 	setKhan(Tab)
 	------------------------------
 	Modifie le prédicat dynamique du Khân
