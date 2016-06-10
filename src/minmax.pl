@@ -4,16 +4,110 @@
 	=========================================
 */
 
+/*
+	minMaxBoard, PlayerSide, ResBoard)
+	------------------------------
+	Unifie ResBoard avec le plateau optimal
+	selon l'algorithme MinMax
+
+	BestMove de la forme
+	( (Xstart, Ystart), (Xend, Yend) )
+*/
+
+generateMove(Board, PlayerSide, BestMoveScoreTuple) :-
+	difficulty(Deepness),
+	minMax(Board, PlayerSide, Deepness, 1, (BestMoveScoreTuple,_)).
+
+minMax(Board, PlayerSide, Deepness, Iteration, BestMoveTuple) :-
+	Iteration = Deepness,
+	possibleMoves(Board, PlayerSide, MovesList),
+	movesScore(PlayerSide, Board, MovesList, MovesScoreList),
+	maxMove(MovesScoreList, BestMoveTuple), !.
+
+testGenerateMoves(PlayerSide) :-
+	board(Board),
+	generateMove(Board, PlayerSide, [Cstart, Cend]),
+	modifyBoard(Board, Cstart, Cend, ResBoard),
+	khan(Khan),
+	showColumns, showRows(1, ResBoard, Khan).
+
+% Partie IA avec plus de profondeur dans l'algo MinMax
+
+/*
+minMax(Board, PlayerSide, Deepness, Iteration, ResBoardTuple) :-
+	SubIteration is Iteration + 1,
+	write("1 - minMax"), nl,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	write("2 - minMax"), nl,
+	minMaxScoreList(BoardsList, PlayerSide, Deepness, SubIteration, MinMaxScoreList),
+	write("3 - minMax"), nl,
+	maxBoard(MinMaxScoreList, ResBoardTuple).
+
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	Deepness = Iteration,
+	Iteration mod 2 = 1,
+	enemyColor(PlayerSide, EnemySide),
+	boardsFromBoard(Board, EnemySide, BoardsList),
+	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
+	minBoard(BoardsScoreList, (_, Score)), !.	
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	Deepness = Iteration,
+	write("--"), write(Iteration), write("--"), nl,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	write("2 - minMaxScore"), nl,
+	boardsScore(PlayerSide, BoardsList, BoardsScoreList),
+	write("3 - minMaxScore"), nl,
+	maxBoard(BoardsScoreList, (_, Score)), !.
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	SubIteration is Iteration + 1,
+	Iteration mod 2 = 1,
+	enemyColor(PlayerSide, EnemySide),
+	boardsFromBoard(Board, EnemySide, BoardsList),
+	minMaxScoreList(BoardsList, PlayerSide, Deepness, SubIteration, MinMaxScoreList),
+	minBoard(MinMaxScoreList, (_,Score)), !.
+minMaxScore(Board, PlayerSide, Deepness, Iteration, Score) :-
+	SubIteration is Iteration + 1,
+	boardsFromBoard(Board, PlayerSide, BoardsList),
+	minMaxScoreList(BoardsList, PlayerSide, Deepness, SubIteration, MinMaxScoreList),
+	maxBoard(MinMaxScoreList, (_,Score)), !.
+
+minMaxScoreList([],_,_,_,[]) :- !.
+minMaxScoreList([B1|BRest], PlayerSide, Deepness, Iteration, [(B1,Score)|Rest]) :-
+	minMaxScore(B1, PlayerSide, Deepness, Iteration, Score),
+	minMaxScoreList(BRest, PlayerSide, Deepness, Iteration, Rest).
+
+
+testMinMax(PlayerSide) :-
+	board(Board), khan(Khan),
+	minMax(Board, PlayerSide, ResBoard),
+	showColumns, showRows(1, ResBoard, Khan).
+*/
+
+/*
+	boardsFromPiecesList(Board, piecesList, BoardsList)
+	------------------------------
+	Retourne la liste complète des plateaux que l'on peut obtenir
+	en partant d'une des pièces de piecesList
+*/
+boardsFromPiecesList(_, [], []) :- !.
+boardsFromPiecesList(Board, [P1|RestPieces], Res) :-
+	boardsFrom(3, Board, P1, SubRes1),
+	boardsFromPiecesList(Board, RestPieces, SubRes2),
+	concat(SubRes1, SubRes2, Res).
+
+	
+% movesScore(PlayerSide, Board, MovesList, MovesScoreList)
 /* 
 	boardsScore(BoardsList, BoardAndScoreList)
 	------------------------------
 	Associe dans une nouvelle liste BoardAndScoreList
 	un plateau et son score évalué
 */
-boardsScore(_, [], []) :- !.
-boardsScore(PlayerSide, [X|Q], [(X,Score)|NextCouples]) :-
-	score(X, PlayerSide, Score),
-	boardsScore(PlayerSide, Q, NextCouples).
+movesScore(_, _, [], []) :- !.
+movesScore(PlayerSide, Board, [[Cstart,Cend]|Q],[([Cstart,Cend],Score)|NextCouples]) :-
+	modifyBoard(Board, Cstart, Cend, BoardRes),
+	score(BoardRes, PlayerSide, Score),
+	movesScore(PlayerSide, Board, Q, NextCouples).
 
 /* 
 	minBoard(BoardsAndScoreList, Board)
@@ -22,14 +116,14 @@ boardsScore(PlayerSide, [X|Q], [(X,Score)|NextCouples]) :-
 	avec le tuple (Board, Score) du plateau
 	avec le plus petit score
 */
-minBoard([FirstBoard|Q], MinBoardScoreTuple) :-
-	minBoard(Q, FirstBoard, MinBoardScoreTuple).
-minBoard([], MinBoardScoreTuple, MinBoardScoreTuple) :- !.
-minBoard([(Brd,Scr)|Q], (_, LocalMinS), MinBoardScoreTuple) :-
+minMove([FirstMove|Q], MinMoveScoreTuple) :-
+	minMove(Q, FirstMove, MinMoveScoreTuple).
+minMove([], MinMoveScoreTuple, MinMoveScoreTuple) :- !.
+minMove([(Move,Scr)|Q], (_, LocalMinS), MinMoveScoreTuple) :-
 	Scr < LocalMinS, !,
-	minBoard(Q, (Brd,Scr), MinBoardScoreTuple).
-minBoard([_|Q], (LocalMinB, LocalMinS), MinBoardScoreTuple) :-
-	minBoard(Q, (LocalMinB,LocalMinS), MinBoardScoreTuple).
+	minMove(Q, (Move,Scr), MinMoveScoreTuple).
+minMove([_|Q], (LocalMinB, LocalMinS), MinMoveScoreTuple) :-
+	minMove(Q, (LocalMinB,LocalMinS), MinMoveScoreTuple).
 
 /* 
 	maxBoard(BoardsAndScoreList, Board)
@@ -38,14 +132,14 @@ minBoard([_|Q], (LocalMinB, LocalMinS), MinBoardScoreTuple) :-
 	avec le tuple (Board, Score) du plateau
 	avec le plus gros score
 */
-maxBoard([FirstBoard|Q], MaxBoardScoreTuple) :-
-	maxBoard(Q, FirstBoard, MaxBoardScoreTuple).
-maxBoard([], MaxBoardScoreTuple, MaxBoardScoreTuple) :- !.
-maxBoard([(Brd,Scr)|Q], (_, LocalMaxS), MaxBoardScoreTuple) :-
+maxMove([FirstMove|Q], MaxMoveScoreTuple) :-
+	maxMove(Q, FirstMove, MaxMoveScoreTuple).
+maxMove([], MaxMoveScoreTuple, MaxMoveScoreTuple) :- !.
+maxMove([(Move,Scr)|Q], (_, LocalMaxS), MaxMoveScoreTuple) :-
 	Scr > LocalMaxS, !,
-	maxBoard(Q, (Brd,Scr), MaxBoardScoreTuple).
-maxBoard([_|Q], (LocalMaxB, LocalMaxS), MaxBoardScoreTuple) :-
-	maxBoard(Q, (LocalMaxB,LocalMaxS), MaxBoardScoreTuple).
+	maxMove(Q, (Move,Scr), MaxMoveScoreTuple).
+maxMove([_|Q], (LocalMaxB, LocalMaxS), MaxMoveScoreTuple) :-
+	maxMove(Q, (LocalMaxB,LocalMaxS), MaxMoveScoreTuple).
 
 /*
 	=========================================
@@ -61,12 +155,14 @@ maxBoard([_|Q], (LocalMaxB, LocalMaxS), MaxBoardScoreTuple) :-
 */
 score(Board, PlayerSide, Score)	:- 
 	subScoreOwnKalistaDead(Board, PlayerSide, SC1),
+	SC1 = -10000, Score is SC1, !;
 	subScoreEnemyKalistaDead(Board, PlayerSide, SC2),
+	SC2 = 10000, Score is SC2, !;
 	subScoreLonelyKalista(Board, PlayerSide, SC3),
 	subScoreLessPiecesThanEnemy(Board, PlayerSide, SC4),
 	subScoreDistanceFromEnemyKalista(Board, PlayerSide, SC5),
 	subScoreNumberOfPower2(Board,PlayerSide, SC6),
-	Score is SC1+SC2+SC3+SC4+SC5+SC6.
+	Score is SC3+SC4+SC5+SC6.
 
 pieceFromColor((_,kr), rouge).
 pieceFromColor((_,sr), rouge).
