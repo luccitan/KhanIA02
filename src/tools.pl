@@ -83,7 +83,6 @@ enemyColor(ocre, rouge).
 %	Prédicats indépendants du projet
 %	==================================================================
 
-
 /*
 	element(X, L)
 	------------------------------
