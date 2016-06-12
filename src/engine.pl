@@ -2,12 +2,17 @@
 	=================================
 	engine.pl
 	=================================
-	Ce fichier contient les différents prédicats
-	qui permettent de manipuler le plateau,
-	contient la partie IA :
+	
 		- génération de mouvements possibles
-		- recherche de solutions optimales
 	-------------------------------
+*/
+
+/* 
+	============================================================
+	============================================================
+	Prédicats de génération de mouvements possibles
+	============================================================
+	============================================================
 */
 
 /* 
@@ -23,6 +28,7 @@ possibleMoves(Board, PlayerSide, PossibleMoves) :-
 	powerOfCurrentKhan(Board, KhanPower),
 	possibleMoves(Board, Board, PlayerSide, (1,1), KhanPower, PossibleMoves),
 	PossibleMoves \= [], !.
+
 % KhanPower = 0 se traduit par une ignorance du Khan et donc possibilité de bouger
 % ce que l'on veut
 possibleMoves(Board, PlayerSide, PossibleMoves) :-
@@ -81,15 +87,6 @@ setRowCell([T|Q], Cell, J, [T|SubRow]) :-
 	SubJ is J - 1,
 	setRowCell(Q, Cell, SubJ, SubRow), !.
 
-/* 
-	emptyCell(X,Y,Board)
-	------------------------------
-	Renvoie true si la cellule de coordonnées (X,Y)
-	du plateau Board est vide ou contient un pion
-*/
-emptyCell(X,Y,Board) :- 
-	cell(X,Y,Board, (_, CellContent)),
-	CellContent = empty.
 
 /* 
 	nextTo(C, PosX, PosY, Board, Boolean)
@@ -104,16 +101,16 @@ emptyCell(X,Y,Board) :-
 nextTo(Xstart, Ystart, Board, (Xres,Yres), true) :-
 	Xres is Xstart - 1, Yres is Ystart,
 		Xres>0, Yres>0, Xres<7, Yres<7,
-		emptyCell(Xres,Yres,Board);
+		cell(Xres, Yres, Board, (_,empty));
 	Xres is Xstart, Yres is Ystart - 1,
 		 Xres>0, Yres>0, Xres<7, Yres<7,
-		 emptyCell(Xres,Yres,Board);
+		 cell(Xres, Yres, Board, (_,empty));
 	Xres is Xstart + 1, Yres is Ystart,
 		Xres>0, Yres>0, Xres<7, Yres<7,
-		emptyCell(Xres,Yres,Board);
+		cell(Xres, Yres, Board, (_,empty));
 	Xres is Xstart, Yres is Ystart + 1,
 		Xres>0, Yres>0, Xres<7, Yres<7,
-		emptyCell(Xres,Yres,Board).
+		cell(Xres, Yres, Board, (_,empty)).
 
 nextTo(Xstart, Ystart,_,(Xres,Yres), false) :-
 	Xres is Xstart - 1, Yres is Ystart,

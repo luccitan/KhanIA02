@@ -9,36 +9,40 @@
 */
 
 :- include('print.pl').
-:- include('tools.pl').
+:- include('internaltools.pl').
+:- include('externaltools.pl').
 :- include('engine.pl').
 :- include('init.pl').
 :- include('minmax.pl').
 :- include('dynamic.pl').
-:- setDifficulty(easy).
-:- dynamic player/2.
-:- dynamic khan/1.
-% Aide débuggage
-:- set_prolog_flag(answer_write_options,[max_depth(0)]).
 
-/*
-	Correspondance des difficultés
-	--------------------------------
-	Utilisé pour la génération de mouvements dans l'IA.
-	Cela correspond à la profondeur de mouvement prévue 
-	par l'IA.
+/* 
+	============================================================
+	============================================================
+	Prédicats généraux (boucle de jeu, prédicat de départ, ...)
+	============================================================
+	============================================================
 */
-correspDifficulty(easy, 1).
-correspDifficulty(normal, 2).
-correspDifficulty(hard, 3).
 
 /*
 	Boucle de départ
 	--------------------------------
 	Lance le jeu
-*/
+*//*
 startGame :-
 	initBoard(Board),
 	setBoard(Board),
-	gameRoundLoop.
+	gameRoundLoop.*/
 
-
+/* 
+	============================================================
+	============================================================
+	Initialisation du jeu, des paramètres, ...
+	============================================================
+	============================================================
+*/
+:- setDifficulty(easy).
+:- dynamic player/2.
+:- dynamic khan/1.
+% Aide débuggage
+:- set_prolog_flag(answer_write_options,[max_depth(0)]).

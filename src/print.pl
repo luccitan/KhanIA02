@@ -19,6 +19,19 @@ multipleWSep(K, N) :-
 wTab :- write("  ").
 
 /* 
+	print(List)
+	------------------------------
+	Affiche la liste des tuples présents dans
+	dans List
+*/
+print([]) :- !.
+print([X|Q]) :-
+	write("("),
+	write(X),
+	write(") "),
+	print(Q).
+
+/* 
 	writeChoice(N)
 	------------------------------
 	Affiche la confirmation de choix
@@ -31,7 +44,6 @@ writeMatchChoiceTypeAlert(_) :-
 	nl, 
 	write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"),
 	fail.
-
 
 /* 
 	writeChoiceText(N)

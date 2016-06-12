@@ -8,6 +8,17 @@
 	-------------------------------
 */
 
+/*
+	Correspondance des difficultés
+	--------------------------------
+	Utilisé pour la génération de mouvements dans l'IA.
+	Cela correspond à la profondeur de mouvement prévue 
+	par l'IA.
+*/
+correspDifficulty(easy, 1).
+correspDifficulty(normal, 2).
+correspDifficulty(hard, 3).
+
 % ========================
 % Prédicat d'intialisation
 % ========================
@@ -200,7 +211,7 @@ humanPositioningMenu(Board, 6, PlayerSide, ResBoard) :-
 	write(" [Joueur "), write(PlayerSide), writeln("] => position de la Kalista"),
 	writeln("Inserez les coordonnees dans ce format : X,Y"),
 	read(CHOICE), validPositioning(Board, PlayerSide, CHOICE, CellPower),
-	getPieceType(PlayerSide, kalista, Type),
+	pieceType(PlayerSide, kalista, Type),
 	setCell(Board, (CellPower, Type), CHOICE, ResBoard).
 humanPositioningMenu(Board, N, PlayerSide, ResBoard) :- 
 	repeat, nl, wSep(20), nl,
@@ -209,7 +220,7 @@ humanPositioningMenu(Board, N, PlayerSide, ResBoard) :-
 	writeln(N), writeln("Inserez les coordonnees dans ce format : X,Y"),
 	read(CHOICE),validPositioning(Board, PlayerSide, CHOICE, CellPower),
 	M is N + 1,
-	getPieceType(PlayerSide, sbire, Type),
+	pieceType(PlayerSide, sbire, Type),
 	setCell(Board, (CellPower, Type), CHOICE, SubBoard),
 	humanPositioningMenu(SubBoard, M, PlayerSide, ResBoard).
 
@@ -226,14 +237,14 @@ iaPositioningMenu(Board, 7, PlayerSide, Board) :-
 iaPositioningMenu(Board, 6, PlayerSide, ResBoard) :-
 	repeat, generateRandomStartPosition(PlayerSide, (X,Y)),
 	cell(X,Y, Board, (CellPower,empty)),
-	getPieceType(PlayerSide, kalista, Type),
+	pieceType(PlayerSide, kalista, Type),
 	setCell(Board, (CellPower, Type), (X,Y), SubBoard),
 	iaPositioningMenu(SubBoard, 7, PlayerSide, ResBoard).
 iaPositioningMenu(Board, N, PlayerSide, ResBoard) :-
 	repeat, generateRandomStartPosition(PlayerSide, (X,Y)),
 	cell(X,Y, Board, (CellPower,empty)),
 	M is N+1,
-	getPieceType(PlayerSide, sbire, Type),
+	pieceType(PlayerSide, sbire, Type),
 	setCell(Board, (CellPower, Type), (X,Y), SubBoard),
 	iaPositioningMenu(SubBoard, M, PlayerSide, ResBoard).
 
