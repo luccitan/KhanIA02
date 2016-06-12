@@ -17,7 +17,7 @@
 			redPiecesList --> [(s, X1, Y1), (s, X2, Y2), (k, X3, Y3), (s, X4, Y4)]
 			ocrePiecesList --> [(k, X1, Y1), (s, X2, Y2), (s, X3, Y3)]
 
-	---------------------------------(-----------------------------
+	--------------------------------------------------------------
 	--------------------------------------------------------------
 */
 
@@ -27,8 +27,6 @@
 :- include('init.pl').
 :- include('minmax.pl').
 
-
-khan((1,3)).
 /*
 player(ocre, homme, [(ko,1,2), (so, 3,3)]).
 player(rouge, ia, [(so,2,2)]).
@@ -103,6 +101,6 @@ correspDifficulty(hard, 3).
 
 :- setKhan((1,4)).
 :- setDifficulty(easy).
-
+:- dynamic player/3.
 % Aide débuggage
 :- set_prolog_flag(answer_write_options,[max_depth(0)]).

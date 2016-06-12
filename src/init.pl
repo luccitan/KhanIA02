@@ -47,25 +47,34 @@ baseBoard(4, [
 				[ (2,empty),(1,empty),(3,empty),(2,empty),(2,empty),(1,empty) ]
 			]).
 
+/* 
+	============================================================
+	============================================================
+	Choix du type de jeu 
+		(Homme vs Homme / Homme vs IA / IA vs IA)
+	============================================================
+	============================================================
+*/
+
 /*
-	triggerIAChoice(N)
+	triggerGameTypeChoice(N)
 	------------------------------
 	Initialise le jeu selon le choix
 	du type de rencontre
 */
-triggerIAChoice(1) :-
+triggerGameTypeChoice(1) :-
 	writeMatchChoiceTypeAlert(1),
 	setPlayer(rouge, homme, []),
 	setPlayer(ocre, homme, []), !.
-triggerIAChoice(2) :-
+triggerGameTypeChoice(2) :-
 	writeMatchChoiceTypeAlert(2),
 	setPlayer(rouge, homme, []),
 	setPlayer(ocre, ia, []), !.
-triggerIAChoice(3) :-
+triggerGameTypeChoice(3) :-
 	writeMatchChoiceTypeAlert(3),
 	setPlayer(rouge, ia, []),
 	setPlayer(ocre, ia, []), !.
-triggerIAChoice(X) :- writeMatchChoiceTypeAlert(X).
+triggerGameTypeChoice(X) :- writeMatchChoiceTypeAlert(X).
 
 /*
 	triggerMatchMenu
@@ -89,52 +98,111 @@ typeMatchMenu :-
 	write("3. - "),writeMatchChoiceTypeText(3), nl,
 	wSep(20), nl,
 	write("Entrez un choix : "),
-	read(CHOICE), nl, triggerIAChoice(CHOICE), nl.
+	read(CHOICE), nl, triggerGameTypeChoice(CHOICE),nl.
 
-/*Choix du plateau de jeu*/
-
-
-
-/*
-Positionnement des pions sur le plateau
-A faire : ajouter type de pièce dans un tuple/3
+/* 
+	============================================================
+	============================================================
+	Choix du plateau de jeu
+	============================================================
+	============================================================
 */
 
-positioningMenu :- baseBoard(1, Board), setBoard(Board), player(_, homme, _),
-player(_, homme, _), positioning(Board, 1, rouge, ResBoard), setBoard(ResBoard), positioning(ResBoard, 1, ocre, Board), setBoard(Board), !.
-%positioningMenu :- player(_, homme, _), player(_, ia, _), positioning(1, rouge), positioningAuto(1, ocre), !.
+triggerBoardChoice(X) :-
+	X > 0, X < 4, !, 
+	nl, write("Vous avez choisi le tableau "), write(X), write(" !"),
+	baseBoard(X, Board), setBoard(Board), nl.
+triggerBoardChoice(_) :-
+	nl, write("Veuillez choisir un plateau entre 1 et 4 ... "), nl,
+	fail.
+
+/*
+	choseBoardMenu
+	------------------------------
+	Affiche le menu de choix de plateau de départ
+	récupère l'entrée de l'utilisateur,
+	et réagit en conséquence
+*/
+choseBoardMenu :-
+	nl, wSep(15), nl, 
+	write("Choisissez un plateau : (tapez de 1 a 4)"), nl,
+	read(CHOICE), nl, triggerBoardChoice(CHOICE), nl.
+
+/*
+	choseBoardLoop
+	------------------------------
+	Lance la boucle de choix du plateau de départ
+*/
+choseBoardLoop :-
+	wSep(50), nl, wTab, wTab, write("Choix du plateau de départ"), nl, wSep(50), nl,
+	showAllBaseBoards,
+	repeat, choseBoardMenu, !.
+
+/* 
+	============================================================
+	============================================================
+	Positionnement des pions sur le plateau
+	A faire : ajouter type de pièce dans un tuple/3
+	============================================================
+	============================================================
+*/
+
+positioningMenu :- 
+	baseBoard(1, Board), setBoard(Board),
+	nl, nl, wSep(50), nl,
+	wTab, write("Positionnement des pieces, camp ROUGE"), nl,
+	playerPositioning(Board, rouge, SubBoard),
+	nl, nl, wSep(50), nl,
+	wTab, write("Positionnement des pieces, camp OCRE"), nl,
+	playerPositioning(SubBoard, ocre, ResBoard),
+	showBoard(ResBoard, (0,0)),
+	setBoard(ResBoard), !.
+
+playerPositioning(Board, PlayerSide, ResBoard) :-
+	player(PlayerSide, homme, _), !,
+	humanPositioning(Board, 1, PlayerSide, ResBoard).
+
+%positioningMenu :- player(_, homme, _), player(_, ia, _), humanPositioning(1, rouge), positioningAuto(1, ocre), !.
 %positioningMenu :- player(_, ia, _), player(_, ia, _), positioningAuto(1, rouge), positioningAuto(1, ocre), !.
 
-positioning(_, 7, _, _) :- !.
-positioning(Board, 6, PlayerType, ResBoard) :- repeat, nl, wSep(20), nl,
-								write("(joueur "), write(PlayerType), write(")"),
-								write("Position de la piece Kalista"),
-								M is 7, read(CHOICE), positionValide(CHOICE),
-								player(PlayerType, X, L),
-								writePieceIntoPlayer(Board, PlayerType, kalista, L, CHOICE,  Res, ResBoard),
-								setPlayer(PlayerType, X, Res), positioning(ResBoard, M, PlayerType, _).
+humanPositioning(Board, 7, _, Board) :- !.
+humanPositioning(Board, 6, PlayerSide, ResBoard) :- 
+	repeat, nl, wSep(20), nl,
+	showBoard(Board, (0,0)),
+	write(" [Joueur "), write(PlayerSide), write("] => position de la Kalista"),
+	nl, write("Inserez les coordonnees dans ce format : X,Y"), nl,
+	M is 7, read(CHOICE), validPositioning(Board, PlayerSide, CHOICE),
+	player(PlayerSide, X, L),
+	writePieceIntoPlayer(Board, PlayerSide, kalista, L, CHOICE,  Res, ResBoard),
+	setPlayer(PlayerSide, X, Res), humanPositioning(ResBoard, M, PlayerSide, _).
 
-positioning(Board, N, PlayerType, ResBoard) :- repeat, nl, wSep(20), nl,
-								write("(joueur "), write(PlayerType), write(")"),
-								write("Position de la piece sbire "),
-								write(N), M is N + 1, read(CHOICE), positionValide(CHOICE),
-								player(PlayerType, X, L),
-								writePieceIntoPlayer(Board, PlayerType, sbire, L, CHOICE, Res, ResBoard),
-								setPlayer(PlayerType, X, Res), positioning(ResBoard, M, PlayerType, _).
+humanPositioning(Board, N, PlayerSide, ResBoard) :- 
+	repeat, nl, wSep(20), nl,
+	showBoard(Board, (0,0)),
+	write(" [Joueur "), write(PlayerSide), write("] => position du sbire "), write(N),
+	nl, write("Inserez les coordonnees dans ce format : X,Y"), nl,
+	M is N + 1, read(CHOICE), validPositioning(Board, PlayerSide, CHOICE),
+	player(PlayerSide, X, L),
+	writePieceIntoPlayer(Board, PlayerSide, sbire, L, CHOICE, Res, SubBoard),
+	setPlayer(PlayerSide, X, Res), humanPositioning(SubBoard, M, PlayerSide, ResBoard).
 
 
-writePieceIntoPlayer(Board, rouge, sbire, L, (X,Y), Res, SubBoard) :- concat(L, [(sr,(X,Y))], Res),
-cell(X, Y, Board, (CellPower,_)),
-setCell(Board, (CellPower, sr), (X,Y), SubBoard).
+writePieceIntoPlayer(Board, rouge, sbire, L, (X,Y), Res, SubBoard) :-
+	 concat(L, [(sr,(X,Y))], Res),
+	cell(X, Y, Board, (CellPower,_)),
+	setCell(Board, (CellPower, sr), (X,Y), SubBoard).
 
-writePieceIntoPlayer(Board, rouge, kalista, L, (X,Y), Res, SubBoard) :- concat(L, [(kr, (X,Y))], Res),
-cell(X, Y, Board, (CellPower,_)),
-setCell(Board, (CellPower, kr), (X,Y), SubBoard).
+writePieceIntoPlayer(Board, rouge, kalista, L, (X,Y), Res, SubBoard) :-
+	concat(L, [(kr, (X,Y))], Res),
+	cell(X, Y, Board, (CellPower,_)),
+	setCell(Board, (CellPower, kr), (X,Y), SubBoard).
 
-writePieceIntoPlayer(Board, ocre, sbire, L, (X,Y), Res, SubBoard) :- concat(L, [(so, (X,Y))], Res),
-cell(X, Y, Board, (CellPower,_)),
-setCell(Board, (CellPower, so), (X,Y), SubBoard).
+writePieceIntoPlayer(Board, ocre, sbire, L, (X,Y), Res, SubBoard) :-
+	concat(L, [(so, (X,Y))], Res),
+	cell(X, Y, Board, (CellPower,_)),
+	setCell(Board, (CellPower, so), (X,Y), SubBoard).
 
-writePieceIntoPlayer(Board, ocre, kalista, L, (X,Y), Res, SubBoard) :- concat(L, [(ko, (X,Y))], Res),
-cell(X, Y, Board, (CellPower,_)),
-setCell(Board, (CellPower, ko), (X,Y), SubBoard).
+writePieceIntoPlayer(Board, ocre, kalista, L, (X,Y), Res, SubBoard) :- 
+	concat(L, [(ko, (X,Y))], Res),
+	cell(X, Y, Board, (CellPower,_)),
+	setCell(Board, (CellPower, ko), (X,Y), SubBoard).

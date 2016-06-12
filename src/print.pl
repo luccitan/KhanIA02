@@ -37,12 +37,33 @@ writeMatchChoiceTypeText(2) :- write("Homme vs IA."), !.
 writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
 
 /* 
-	showBoard
+	showCurrentBoard
 	------------------------------
 	Affiche le contenu du plateau actuel
 */
-showBoard :- board(Board), khan(Khan),
-		showColumns, showRows(1, Board, Khan).
+showCurrentBoard :- board(Board), khan(Khan),
+		showColumns, showBoard(Board, Khan).
+
+/* 
+	showBoard
+	------------------------------
+	Affiche le contenu du plateau Board
+*/
+showBoard(Board, Khan) :-
+	showColumns, showRows(1, Board, Khan).
+
+/* 
+	showAllBaseBoard
+	------------------------------
+	Liste les plateaux de départs
+*/
+showAllBaseBoards :-
+	subShowAllBaseBoards(1), subShowAllBaseBoards(2),
+	subShowAllBaseBoards(3), subShowAllBaseBoards(4).
+
+subShowAllBaseBoards(N) :-
+	wSep(30), nl, wTab, write("PLATEAU "), write(N), nl, wSep(30), nl,
+	baseBoard(N, Board), showBoard(Board, (0,0)), nl, nl.
 
 /* 
 	showColumns

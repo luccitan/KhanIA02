@@ -137,13 +137,37 @@ difference([T|Q], L2, [T|Res]) :- \+element(T, L2), difference(Q, L2, Res), !.
 difference([_|Q], L2, Res) :- difference(Q, L2, Res), !.
 
 /*
-	positionValide((V1, V2))
+	validPositioning(Board, PlayerSide, C)
 	------------------------------
-	Prédicat qui prend un tuple en entrée représentant une position
-	et renvoie vraie si la position est valide + vérifier qu'une pièce n'est pas déjà placée
-	+ vérifier que le joueur reste bien dans les deux lignes allouées.
+	Prédicat qui vérifie
 */
-positionValide((V1, V2)) :- V1 >= 1, V1 =< 6, V2 >= 1, V2 =< 6.
+% --------- Cas du côté ROUGE
+validPositioning(Board, rouge, ((X, Y))) :-
+	X >= 5, X =< 6, Y >= 1, Y =< 6,
+	cell(X, Y, Board, (_,empty)), !.
+% Cas où la cellule n'est pas vide
+validPositioning(_, rouge, ((X,Y))) :-
+	X >= 5, X =< 6, Y >= 1, Y =< 6,
+	nl, wSep(75), nl, wSep(75), nl,
+	write("La cellule est deja prise !"), nl, !, fail.
+% Cas où les coordonnées ne sont pas valides.
+validPositioning(_, rouge,_) :-
+	nl, wSep(75), nl, wSep(75), nl,
+	nl, write("Coordonnees invalides, elles doivent etre comprises entre (5,1) et (6,6)"), nl, fail.
+% --------- Cas du côté OCRE
+validPositioning(Board, ocre, ((X, Y))) :-
+	X >= 1, X =< 2, Y >= 1, Y =< 6,
+	cell(X, Y, Board, (_,empty)), !.
+% Cas où la cellule n'est pas vide
+validPositioning(_, ocre, ((X, Y))) :-
+	X >= 1, X =< 2, Y >= 1, Y =< 6,
+	nl, wSep(75), nl, wSep(75), nl,
+	nl, write("La cellule est deja prise !"), nl, !, fail.
+% Cas où les coordonnées ne sont pas valides.
+validPositioning(_, ocre,_) :-
+	nl, wSep(75), nl, wSep(75), nl,
+	nl, write("Coordonnees invalides, elles doivent etre comprises entre (1,1) et (2,6)"), nl, fail.
+
 
 /*
 	longueur(L, Res)
