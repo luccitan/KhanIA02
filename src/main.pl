@@ -4,8 +4,7 @@
 	=================================
 	Ce fichier contient les différents prédicats
 	qui permettent d'inclure tout le projet
-	et de gérer les prédicats dynamiques utiles
-	au jeu
+	et contient les initialisations et l'appel de base du jeu
 	-------------------------------
 */
 
