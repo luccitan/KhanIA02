@@ -25,14 +25,14 @@
 		[(Xstart, Ystart), (Xend, Yend) ]
 */
 possibleMoves(Board, PlayerSide, PossibleMoves) :-
-	powerOfCurrentKhan(Board, KhanPower),
+	powerOfCurrentKhan(Board, KhanPower), KhanPower > 0,
 	possibleMoves(Board, Board, PlayerSide, (1,1), KhanPower, PossibleMoves),
 	PossibleMoves \= [], !.
 
 % KhanPower = 0 se traduit par une ignorance du Khan et donc possibilité de bouger
 % ce que l'on veut
 possibleMoves(Board, PlayerSide, PossibleMoves) :-
-	write("Khan trop restrictif, chaque piece est amovible ..."),
+	writeln("Le Khan trop restrictif : chaque piece est amovible ..."),
 	possibleMoves(Board, Board, PlayerSide, (1,1), 0, PossibleMoves).
 
 possibleMoves(_, [],_,_,_,[]) :- !.
@@ -240,5 +240,7 @@ boardsFromPositions(C, Board, [PosX|PosRest], [BoardRes|BoardsRest]) :-
 	boardsFromPositions(C, Board, PosRest, BoardsRest).
 
 powerOfCurrentKhan(Board, PowerOfCurrentKhan) :-
-	khan((XKhan,YKhan)),
+	khan((XKhan,YKhan)), 
+	XKhan >= 1, XKhan =< 6, YKhan >= 1, YKhan =< 6, !,
 	cell(XKhan, YKhan, Board, (PowerOfCurrentKhan, _)).
+powerOfCurrentKhan(_,0).

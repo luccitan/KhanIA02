@@ -65,6 +65,19 @@ writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
 */
 
 /* 
+	showAllBaseBoard
+	------------------------------
+	Liste les plateaux de départs
+*/
+showAllBaseBoards :-
+	subShowAllBaseBoards(1), subShowAllBaseBoards(2),
+	subShowAllBaseBoards(3), subShowAllBaseBoards(4).
+
+subShowAllBaseBoards(N) :-
+	wSep(30), nl, wTab, write("PLATEAU "), writeln(N), wSep(30), nl,
+	baseBoard(N, Board), showBoard(Board, (0,0)), nl, nl.
+
+/* 
 	showCurrentBoard
 	------------------------------
 	Affiche le contenu du plateau actuel
@@ -79,19 +92,6 @@ showCurrentBoard :- board(Board), khan(Khan),
 */
 showBoard(Board, Khan) :-
 	showColumns, showRows(1, Board, Khan).
-
-/* 
-	showAllBaseBoard
-	------------------------------
-	Liste les plateaux de départs
-*/
-showAllBaseBoards :-
-	subShowAllBaseBoards(1), subShowAllBaseBoards(2),
-	subShowAllBaseBoards(3), subShowAllBaseBoards(4).
-
-subShowAllBaseBoards(N) :-
-	wSep(30), nl, wTab, write("PLATEAU "), writeln(N), wSep(30), nl,
-	baseBoard(N, Board), showBoard(Board, (0,0)), nl, nl.
 
 /* 
 	showColumns
@@ -133,18 +133,27 @@ writeSubRowLoop(_) :- nl.
 	Affiche le contenu de la Nème cellule d'une ligne
 */
 showCells([], _,_,_) :- !.
-showCells([Cell|Q], Khan, I, J) :-
-	writeCell(Cell, Khan, I, J),
+showCells([Cell|Q], (X,Y), I, J) :-
+	I = X, J = Y, !,
+	writeCell(Cell, true),
+	SubJ is J + 1, showCells(Q, (X,Y), I, SubJ).
+showCells([Cell|Q],Khan, I, J) :-
+	writeCell(Cell, false),
 	SubJ is J + 1, showCells(Q, Khan, I, SubJ), !.
 
 % writeCell
 % sous-prédicat pour showCells
-writeCell((1, empty),_,_,_) :- write(" - |"), !.
-writeCell((2, empty),_,_,_) :- write(" = |"), !.
-writeCell((3, empty),_,_,_) :- write(" # |"), !.
-writeCell((_,kr),_,_,_) :- write(" R |"), !.
-writeCell((_,ko),_,_,_) :- write(" O |"), !.
-writeCell((_,sr),_,_,_) :- write(" r |"), !.
-writeCell((_,so),_,_,_) :- write(" o |"), !.
+writeCell((1, empty),_) :- write(" - |"), !.
+writeCell((2, empty),_) :- write(" = |"), !.
+writeCell((3, empty),_) :- write(" # |"), !.
+writeCell((_,kr),false) :- write(" R |"), !.
+writeCell((_,ko),false) :- write(" O |"), !.
+writeCell((_,sr),false) :- write(" r |"), !.
+writeCell((_,so),false) :- write(" o |"), !.
+writeCell((_,kr),true) :- write("!R |"), !.
+writeCell((_,ko),true) :- write("!O |"), !.
+writeCell((_,sr),true) :- write("!r |"), !.
+writeCell((_,so),true) :- write("!o |"), !.
+
 
 
