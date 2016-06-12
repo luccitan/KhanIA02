@@ -11,12 +11,12 @@
 	selon l'algorithme MinMax
 
 	BestMove de la forme
-	( (Xstart, Ystart), (Xend, Yend) )
+	[(Xstart, Ystart), (Xend, Yend)]
 */
 
-generateMove(Board, PlayerSide, BestMoveScoreTuple) :-
+generateMove(Board, PlayerSide, BestMove) :-
 	difficulty(Deepness),
-	minMax(Board, PlayerSide, Deepness, 1, (BestMoveScoreTuple,_)).
+	minMax(Board, PlayerSide, Deepness, 1, (BestMove,_)).
 
 minMax(Board, PlayerSide, Deepness, Iteration, BestMoveTuple) :-
 	Iteration = Deepness,
@@ -105,14 +105,6 @@ score(Board, PlayerSide, Score)	:-
 	subScoreNumberOfPower2(Board,PlayerSide, SC6),
 	Score is SC3+SC4+SC5+SC6.
 
-pieceFromColor((_,kr), rouge).
-pieceFromColor((_,sr), rouge).
-pieceFromColor((_,ko), ocre).
-pieceFromColor((_,so), ocre).
-pieceOfPower2AndColor((2,kr), rouge).
-pieceOfPower2AndColor((2,sr), rouge).
-pieceOfPower2AndColor((2,ko), ocre).
-pieceOfPower2AndColor((2,so), ocre).
 
 /* 
 	subScoreOwnKalistaDead(Board, PlayerSide, ResultScore)

@@ -79,6 +79,26 @@ enemyColor(rouge, ocre).
 enemyColor(ocre, rouge).
 
 /*
+	pieceFromColor(Piece, Color)
+	------------------------------
+	Unifie Color avec la couleur de Piece
+*/
+pieceFromColor((_,kr), rouge).
+pieceFromColor((_,sr), rouge).
+pieceFromColor((_,ko), ocre).
+pieceFromColor((_,so), ocre).
+/*
+	pieceOfPower2AndColor(Piece, Color)
+	------------------------------
+	Unifie Color avec la couleur de Piece 
+	si celle-ci est sur une case de puissance 2
+*/
+pieceOfPower2AndColor((2,kr), rouge).
+pieceOfPower2AndColor((2,sr), rouge).
+pieceOfPower2AndColor((2,ko), ocre).
+pieceOfPower2AndColor((2,so), ocre).
+
+/*
 	validPositioning(Board, PlayerSide, C)
 	------------------------------
 	Prédicat qui vérifie qu'une entrée de position de départ
