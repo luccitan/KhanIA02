@@ -149,7 +149,14 @@ neighbourPositionsFromList(Board, [CoupleTete|QueueCouples], MovesTotaux, CheckE
 	neighbourPositionsFromList(Board, QueueCouples, MovesQueues, CheckEmpty, NewHistory, FinalHistory),
 	concat(MovesCouple, MovesQueues, MovesTotaux).
 
-
+/*
+	movesFrom(K, Board, C, MovesFrom)
+	------------------------------
+	Unifie MovesFrom avec la liste des mouvements
+	possibles depuis la position C, en faisant K déplacements
+	sur le plateau Board.
+	Les mouvements sont de la forme (C, CoordonnesdArrivee)
+*/
 movesFrom(K, Board, C, MovesFrom) :-
 	positionsFrom(K, Board, C, PositionsFrom),
 	subMovesFrom(C, PositionsFrom, MovesFrom).

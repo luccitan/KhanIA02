@@ -8,25 +8,12 @@
 	au jeu
 	-------------------------------
 */
-/*
-	--------------------------------------------------------------
-	-------------------------- NOTES -----------------------------
-	----------------------- TEMPORAIRES --------------------------
-
-	- Structure de la liste de pions d'un joueur :
-			redPiecesList --> [(s, X1, Y1), (s, X2, Y2), (k, X3, Y3), (s, X4, Y4)]
-			ocrePiecesList --> [(k, X1, Y1), (s, X2, Y2), (s, X3, Y3)]
-
-	--------------------------------------------------------------
-	--------------------------------------------------------------
-*/
 
 :- include('print.pl').
 :- include('tools.pl').
 :- include('engine.pl').
 :- include('init.pl').
 :- include('minmax.pl').
-
 
 /*
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)
@@ -94,9 +81,8 @@ correspDifficulty(hard, 3).
 				[ (1,empty),(3,kr),(2,empty),(2,empty),(1,empty),(3,empty) ]
 ]).
 
-
-:- setKhan((1,4)).
 :- setDifficulty(easy).
 :- dynamic player/2.
+:- dynamic khan/1.
 % Aide débuggage
 :- set_prolog_flag(answer_write_options,[max_depth(0)]).

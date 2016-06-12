@@ -27,7 +27,10 @@ wTab :- write("  ").
 writeMatchChoiceTypeAlert(N) :- 
 	N>0, N<4, !,
 	write("Vous avez choisi le choix '"), writeMatchChoiceTypeText(N), writeln("' !").
-writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
+writeMatchChoiceTypeAlert(_) :- 
+	nl, 
+	write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"),
+	fail.
 
 
 /* 
@@ -39,6 +42,15 @@ writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix 
 writeMatchChoiceTypeText(1) :- write("Homme vs Homme."), !.
 writeMatchChoiceTypeText(2) :- write("Homme vs IA."), !.
 writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
+
+
+/* 
+	============================================================
+	============================================================
+	Prédicats d'affichage de tableau
+	============================================================
+	============================================================
+*/
 
 /* 
 	showCurrentBoard
@@ -99,7 +111,7 @@ showRows(NumLigne, [T|Q], Khan) :-
 
 % writeSubRow / writeSubRowLoop
 %"Sous"-prédicats pour boucler et faciliter l'écriture de showRows
-writeSubRow :-wTab, write("+"), writeSubRowLoop(1).
+writeSubRow :- wTab, write("+"), writeSubRowLoop(1).
 writeSubRowLoop(N) :- N<7, write("---+"), Nb is N+1, writeSubRowLoop(Nb), !.
 writeSubRowLoop(_) :- nl.
 
@@ -115,12 +127,11 @@ showCells([Cell|Q], Khan, I, J) :-
 
 % writeCell
 % sous-prédicat pour showCells
-
 writeCell((1, empty),_,_,_) :- write(" - |"), !.
 writeCell((2, empty),_,_,_) :- write(" = |"), !.
 writeCell((3, empty),_,_,_) :- write(" # |"), !.
-writeCell((_,kr),_,_,_) :- write("!R |"), !.
-writeCell((_,ko),_,_,_) :- write("!O |"), !.
+writeCell((_,kr),_,_,_) :- write(" R |"), !.
+writeCell((_,ko),_,_,_) :- write(" O |"), !.
 writeCell((_,sr),_,_,_) :- write(" r |"), !.
 writeCell((_,so),_,_,_) :- write(" o |"), !.
 
