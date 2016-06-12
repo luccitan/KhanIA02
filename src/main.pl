@@ -27,10 +27,6 @@
 :- include('init.pl').
 :- include('minmax.pl').
 
-/*
-player(ocre, homme, [(ko,1,2), (so, 3,3)]).
-player(rouge, ia, [(so,2,2)]).
-*/
 
 /*
 	setPlayer(PlayerColor, PlayerType, PlayerPieces)
@@ -40,11 +36,11 @@ player(rouge, ia, [(so,2,2)]).
 	Teste d'abord le retract si il y existe déjà un fait
 	Sinon, il l'ajoute.
 */
-setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
-	retract(player(PlayerColor,_,_)),
-	asserta((player(PlayerColor, PlayerType, PlayerPieces))), !.
-setPlayer(PlayerColor, PlayerType, PlayerPieces) :-
-	asserta((player(PlayerColor, PlayerType, PlayerPieces))), !.
+setPlayer(PlayerColor, PlayerType) :-
+	retract(player(PlayerColor,_)),
+	asserta((player(PlayerColor, PlayerType))), !.
+setPlayer(PlayerColor, PlayerType) :-
+	asserta((player(PlayerColor, PlayerType))), !.
 
 
 /*
@@ -101,6 +97,6 @@ correspDifficulty(hard, 3).
 
 :- setKhan((1,4)).
 :- setDifficulty(easy).
-:- dynamic player/3.
+:- dynamic player/2.
 % Aide débuggage
 :- set_prolog_flag(answer_write_options,[max_depth(0)]).

@@ -52,6 +52,11 @@ typeFromSide(so, ocre).
 typeFromSide(kr, rouge).
 typeFromSide(sr, rouge).
 
+getPieceType(ocre, kalista, ko).
+getPieceType(ocre, sbire, so).
+getPieceType(rouge, kalista, kr).
+getPieceType(rouge, sbire, sr).
+
 /* 
 	print(List)
 	------------------------------
@@ -142,30 +147,30 @@ difference([_|Q], L2, Res) :- difference(Q, L2, Res), !.
 	Prédicat qui vérifie
 */
 % --------- Cas du côté ROUGE
-validPositioning(Board, rouge, ((X, Y))) :-
+validPositioning(Board, rouge, (X, Y), CellPower) :-
 	X >= 5, X =< 6, Y >= 1, Y =< 6,
-	cell(X, Y, Board, (_,empty)), !.
+	cell(X, Y, Board, (CellPower,empty)), !.
 % Cas où la cellule n'est pas vide
-validPositioning(_, rouge, ((X,Y))) :-
+validPositioning(_, rouge, (X,Y),_) :-
 	X >= 5, X =< 6, Y >= 1, Y =< 6,
-	nl, wSep(75), nl, wSep(75), nl,
+	nl, wSep(60), nl, wSep(60), nl,
 	write("La cellule est deja prise !"), nl, !, fail.
 % Cas où les coordonnées ne sont pas valides.
-validPositioning(_, rouge,_) :-
-	nl, wSep(75), nl, wSep(75), nl,
+validPositioning(_, rouge,_,_) :-
+	nl, wSep(60), nl, wSep(60), nl,
 	nl, write("Coordonnees invalides, elles doivent etre comprises entre (5,1) et (6,6)"), nl, fail.
 % --------- Cas du côté OCRE
-validPositioning(Board, ocre, ((X, Y))) :-
+validPositioning(Board, ocre, (X, Y), CellPower) :-
 	X >= 1, X =< 2, Y >= 1, Y =< 6,
-	cell(X, Y, Board, (_,empty)), !.
+	cell(X, Y, Board, (CellPower,empty)), !.
 % Cas où la cellule n'est pas vide
-validPositioning(_, ocre, ((X, Y))) :-
+validPositioning(_, ocre, (X, Y),_) :-
 	X >= 1, X =< 2, Y >= 1, Y =< 6,
-	nl, wSep(75), nl, wSep(75), nl,
+	nl, wSep(60), nl, wSep(60), nl,
 	nl, write("La cellule est deja prise !"), nl, !, fail.
 % Cas où les coordonnées ne sont pas valides.
-validPositioning(_, ocre,_) :-
-	nl, wSep(75), nl, wSep(75), nl,
+validPositioning(_, ocre,_,_) :-
+	nl, wSep(60), nl, wSep(60), nl,
 	nl, write("Coordonnees invalides, elles doivent etre comprises entre (1,1) et (2,6)"), nl, fail.
 
 
