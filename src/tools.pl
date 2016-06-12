@@ -153,12 +153,12 @@ validPositioning(Board, rouge, (X, Y), CellPower) :-
 % Cas où la cellule n'est pas vide
 validPositioning(_, rouge, (X,Y),_) :-
 	X >= 5, X =< 6, Y >= 1, Y =< 6,
-	nl, wSep(60), nl, wSep(60), nl,
-	write("La cellule est deja prise !"), nl, !, fail.
+	nl, multipleWSep(2, 60),
+	writeln("La cellule est deja prise !"), !, fail.
 % Cas où les coordonnées ne sont pas valides.
 validPositioning(_, rouge,_,_) :-
-	nl, wSep(60), nl, wSep(60), nl,
-	nl, write("Coordonnees invalides, elles doivent etre comprises entre (5,1) et (6,6)"), nl, fail.
+	nl, multipleWSep(2, 60),
+	nl, writeln("Coordonnees invalides, elles doivent etre comprises entre (5,1) et (6,6)"), fail.
 % --------- Cas du côté OCRE
 validPositioning(Board, ocre, (X, Y), CellPower) :-
 	X >= 1, X =< 2, Y >= 1, Y =< 6,
@@ -166,12 +166,12 @@ validPositioning(Board, ocre, (X, Y), CellPower) :-
 % Cas où la cellule n'est pas vide
 validPositioning(_, ocre, (X, Y),_) :-
 	X >= 1, X =< 2, Y >= 1, Y =< 6,
-	nl, wSep(60), nl, wSep(60), nl,
+	nl, multipleWSep(2, 60),
 	nl, write("La cellule est deja prise !"), nl, !, fail.
 % Cas où les coordonnées ne sont pas valides.
 validPositioning(_, ocre,_,_) :-
-	nl, wSep(60), nl, wSep(60), nl,
-	nl, write("Coordonnees invalides, elles doivent etre comprises entre (1,1) et (2,6)"), nl, fail.
+	nl, multipleWSep(2, 60),
+	nl, writeln("Coordonnees invalides, elles doivent etre comprises entre (1,1) et (2,6)"), fail.
 
 
 /*

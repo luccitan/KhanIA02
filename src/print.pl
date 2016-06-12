@@ -11,6 +11,10 @@
 % Ecriture d'un séparateur sur N cases
 wSep(0) :- !.
 wSep(N) :- write("_"), Nb is N-1, wSep(Nb).
+% Ecriture de séparateurs avec passages à la ligne
+multipleWSep(0,_) :- !.
+multipleWSep(K, N) :-
+	wSep(N), nl, SK is K - 1, multipleWSep(SK, N).
 % Ecriture d'une tabulation (2 espaces)
 wTab :- write("  ").
 
@@ -22,7 +26,7 @@ wTab :- write("  ").
 */
 writeMatchChoiceTypeAlert(N) :- 
 	N>0, N<4, !,
-	write("Vous avez choisi le choix '"), writeMatchChoiceTypeText(N), write("' !"), nl.
+	write("Vous avez choisi le choix '"), writeMatchChoiceTypeText(N), writeln("' !").
 writeMatchChoiceTypeAlert(_) :- nl, write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"), fail.
 
 
@@ -62,7 +66,7 @@ showAllBaseBoards :-
 	subShowAllBaseBoards(3), subShowAllBaseBoards(4).
 
 subShowAllBaseBoards(N) :-
-	wSep(30), nl, wTab, write("PLATEAU "), write(N), nl, wSep(30), nl,
+	wSep(30), nl, wTab, write("PLATEAU "), writeln(N), wSep(30), nl,
 	baseBoard(N, Board), showBoard(Board, (0,0)), nl, nl.
 
 /* 

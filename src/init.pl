@@ -8,6 +8,15 @@
 	-------------------------------
 */
 
+% ========================
+% Prédicat d'intialisation
+% ========================
+initBoard(Board) :-
+	triggerMatchMenu,
+	choseBoardLoop(InitialBoard),
+	positioningPhase(InitialBoard, Board),
+	setBoard(Board).
+
 /*
 	baseBoard(N, Board)
 	------------------------------
@@ -108,11 +117,11 @@ typeMatchMenu :-
 	============================================================
 */
 
-triggerBoardChoice(X) :-
+triggerBoardChoice(X, Board) :-
 	X > 0, X < 4, !, 
 	nl, write("Vous avez choisi le tableau "), write(X), write(" !"),
-	baseBoard(X, Board), setBoard(Board), nl.
-triggerBoardChoice(_) :-
+	baseBoard(X, Board), nl.
+triggerBoardChoice(_,_) :-
 	nl, write("Veuillez choisir un plateau entre 1 et 4 ... "), nl,
 	fail.
 
@@ -123,20 +132,20 @@ triggerBoardChoice(_) :-
 	récupère l'entrée de l'utilisateur,
 	et réagit en conséquence
 */
-choseBoardMenu :-
+choseBoardMenu(Board) :-
 	nl, wSep(15), nl, 
 	write("Choisissez un plateau : (tapez de 1 a 4)"), nl,
-	read(CHOICE), nl, triggerBoardChoice(CHOICE), nl.
+	read(CHOICE), nl, triggerBoardChoice(CHOICE, Board), nl.
 
 /*
 	choseBoardLoop
 	------------------------------
 	Lance la boucle de choix du plateau de départ
 */
-choseBoardLoop :-
-	wSep(50), nl, wTab, wTab, write("Choix du plateau de départ"), nl, wSep(50), nl,
+choseBoardLoop(Board) :-
+	wSep(50), nl, wTab, wTab, write("Choix du plateau de depart"), nl, wSep(50), nl,
 	showAllBaseBoards,
-	repeat, choseBoardMenu, !.
+	repeat, choseBoardMenu(Board), !.
 
 /* 
 	============================================================
@@ -153,18 +162,16 @@ choseBoardLoop :-
 	Lance les différentes étapes de positionnement
 	des pièces
 */
-positioningPhase :- 
-	baseBoard(1, Board), setBoard(Board),
-	nl, wSep(60), nl, wSep(60), nl, wSep(60), nl,
+positioningPhase(Board, ResBoard) :- 
+	nl, nl, multipleWSep(3, 60), 
 	wTab, write("Positionnement des pieces, camp ROUGE"), nl,
 	playerPositioning(Board, rouge, SubBoard),
-	nl, wSep(60), nl, wSep(60), nl, wSep(60), nl,
+	nl, nl, multipleWSep(3, 60), 
 	wTab, write("Positionnement des pieces, camp OCRE"), nl,
 	playerPositioning(SubBoard, ocre, ResBoard),
-	nl, wSep(60), nl, wSep(60), nl, wSep(60), nl, wSep(60), nl,
-	nl, write("Plateau de depart : "), nl,
-	showBoard(ResBoard, (0,0)),
-	setBoard(ResBoard), !.
+	nl, multipleWSep(4, 60), 
+	nl, writeln("Plateau de depart : "),
+	showBoard(ResBoard, (0,0)), !.
 
 /*
 	playerPositioning
@@ -190,16 +197,16 @@ playerPositioning(Board, PlayerSide, ResBoard) :-
 humanPositioningMenu(Board, 6, PlayerSide, ResBoard) :- 
 	repeat, nl, wSep(20), nl,
 	showBoard(Board, (0,0)),
-	write(" [Joueur "), write(PlayerSide), write("] => position de la Kalista"),
-	nl, write("Inserez les coordonnees dans ce format : X,Y"), nl,
+	write(" [Joueur "), write(PlayerSide), writeln("] => position de la Kalista"),
+	writeln("Inserez les coordonnees dans ce format : X,Y"),
 	read(CHOICE), validPositioning(Board, PlayerSide, CHOICE, CellPower),
 	getPieceType(PlayerSide, kalista, Type),
 	setCell(Board, (CellPower, Type), CHOICE, ResBoard).
 humanPositioningMenu(Board, N, PlayerSide, ResBoard) :- 
 	repeat, nl, wSep(20), nl,
 	showBoard(Board, (0,0)),
-	write(" [Joueur "), write(PlayerSide), write("] => position du sbire "), write(N),
-	nl, write("Inserez les coordonnees dans ce format : X,Y"), nl,
+	write(" [Joueur "), write(PlayerSide), write("] => position du sbire "),
+	writeln(N), writeln("Inserez les coordonnees dans ce format : X,Y"),
 	read(CHOICE),validPositioning(Board, PlayerSide, CHOICE, CellPower),
 	M is N + 1,
 	getPieceType(PlayerSide, sbire, Type),
@@ -214,7 +221,7 @@ humanPositioningMenu(Board, N, PlayerSide, ResBoard) :-
 	Unifie le résultat du positionnement avec ResBoard.
 */
 iaPositioningMenu(Board, 7, PlayerSide, Board) :- 
-	nl, write("Positionnement de l'IA du camp "), write(PlayerSide), nl,
+	nl, write("Positionnement de l'IA du camp "), writeln(PlayerSide),
 	showBoard(Board, (0,0)), !.
 iaPositioningMenu(Board, 6, PlayerSide, ResBoard) :-
 	repeat, generateRandomStartPosition(PlayerSide, (X,Y)),
