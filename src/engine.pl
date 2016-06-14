@@ -1,9 +1,15 @@
+% ------------------------------------------------------------------
+%	@developer : Tanguy LUCCI, UTC Student
+%	@developer : Alexandre-Guillaume GUILBERT, UTC Student
+% ------------------------------------------------------------------
+
+
 /*
 	=================================
 	engine.pl
 	=================================
-	
-		- génération de mouvements possibles
+	Prédicats de générations de mouvements
+	et de création/modification de plateau
 	-------------------------------
 */
 
