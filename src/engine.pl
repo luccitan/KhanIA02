@@ -62,14 +62,14 @@ subPossibleMoves(Brd,[_|CellRest],PlayerSide,(X,Y), KhanPower, Res) :-
 	subPossibleMoves(Brd, CellRest,PlayerSide, (X, SubY), KhanPower, Res), !.
 
 /* 
-	modifyBrd(Brd, CStart, CDest,BrdRes) 
+	createBrd(Brd, CStart, CDest,BrdRes) 
 	------------------------------
 	Unifie BrdRes avec une version modifié de Brd.
 	Dans cette version modifié, la potentielle pièce
 	aux coordonnées CStart est déplacée aux coordonnées
 	CDest
 */
-modifyBrd(Brd, (Xstart, Ystart), (Xend, Yend),BrdRes) :-
+createBrd(Brd, (Xstart, Ystart), (Xend, Yend),BrdRes) :-
 	cell(Xstart, Ystart, Brd, (CellPower,CellType)),
 	cell(Xend, Yend, Brd, (TargetCellPower, _)),
 	setCell(Brd, (CellPower, empty), (Xstart, Ystart), SubBrd),
@@ -235,7 +235,7 @@ boardsFrom(K, Brd, StartPosition, BrdsList) :-
 */
 boardsFromPositions(_,_,[], []) :- !.
 boardsFromPositions(C, Brd, [PosX|PosRest], [BrdRes|BrdsRest]) :-
-	modifyBrd(Brd, C, PosX, BrdRes),
+	createBrd(Brd, C, PosX, BrdRes),
 	boardsFromPositions(C, Brd, PosRest, BrdsRest).
 
 powerOfCurrentKhan(Brd, PowerOfCurrentKhan) :-

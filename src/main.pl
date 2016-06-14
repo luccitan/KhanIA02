@@ -74,14 +74,14 @@ doRound(Brd, PlayerSide) :-
 	player(PlayerSide, ia), !,
 	khan(Khan),
 	generateMove(Brd, Khan, PlayerSide, [StartPosition, EndPosition]),
-	modifyBrd(Brd, StartPosition, EndPosition, BrdRes),
+	createBrd(Brd, StartPosition, EndPosition, BrdRes),
 	setKhan(EndPosition), setBrd(BrdRes).	
 doRound(Brd, PlayerSide) :-
 	khan(Khan),
 	possibleMoves(Brd, Khan, PlayerSide, PossibleMoves, RestrictiveKhan),
 	restrictiveKhanMessage(RestrictiveKhan),
 	askTheMove(PossibleMoves, [StartPosition, EndPosition]),
-	modifyBrd(Brd, StartPosition, EndPosition, BrdRes),
+	createBrd(Brd, StartPosition, EndPosition, BrdRes),
 	setKhan(EndPosition), setBrd(BrdRes).
 
 askTheMove(PossibleMoves, Move) :-

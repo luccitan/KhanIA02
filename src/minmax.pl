@@ -1,11 +1,13 @@
-/*
-	=========================================
-	========= ALGORITHME MINMAX =============
-	=========================================
-*/
+% ==================================================================================
+%							ALGORITHME MinMax			
+% ==================================================================================
+
+generateMove(Brd, Khan, PlayerSide, BestMove) :-
+	difficulty(Deepness),
+	minMax(Brd, Khan, PlayerSide, Deepness, (BestMove,_)).
 
 /*
-	minMaxBrd, PlayerSide, ResBrd)
+	minMax(Brd,Khan, PlayerSide, ResBrd)
 	------------------------------
 	Unifie ResBrd avec le plateau optimal
 	selon l'algorithme MinMax
@@ -13,12 +15,6 @@
 	BestMove de la forme
 	[(Xstart, Ystart), (Xend, Yend)]
 */
-
-generateMove(Brd, Khan, PlayerSide, BestMove) :-
-	difficulty(Deepness),
-	minMax(Brd, Khan, PlayerSide, Deepness, (BestMove,_)).
-
-
 minMax(Brd, Khan, PlayerSide, 1, BestMoveTuple) :-
 	possibleMoves(Brd, Khan, PlayerSide, MovesList,_),
 	movesScore(PlayerSide, Brd, MovesList, MovesScoreList),
@@ -29,17 +25,54 @@ minMax(Brd, Khan, PlayerSide, Deepness, BestMoveTuple) :-
 	minMaxMovesScore(Brd, Khan, PlayerSide, MovesList, SubDeepness, 1, MovesScoreList),
 	maxMove(MovesScoreList, BestMoveTuple).
 
+% --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+% 			Prédicat minMaxMovesScore
+%	Utilisé pour générer les arborescences de mouvements et faire 'remonter' leur score
+%	jusqu'aux mouvements de "profondeur 1"
+% --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+
 minMaxMovesScore(_,_,_, [],_,_, []) :- !.
+
+% Cas où on a atteint la profondeur maximale (Profondeur = Itération)
+% 	- Profondeur impaire => on est en 'position MIN'
+%   - Profondeur paire => on est en 'position MAX'
 minMaxMovesScore(Brd, Khan, PlayerSide, [[Cstart,Cend]|MRL], Dpnss, Dpnss, [([Cstart, Cend],MoveScore)|MSRL]) :-
-	modifyBrd(Brd,Cstart, Cend, BrdRes),
+	createBrd(Brd,Cstart, Cend, BrdRes),
 	1 is mod(Dpnss,2),
 	enemyColor(PlayerSide, EnemySide),
 	possibleMoves(BrdRes, Cstart, EnemySide, MovesList,_),
 	movesScore(PlayerSide, BrdRes, MovesList, MovesScoreList),
 	minMove(MovesScoreList, (_, MoveScore)),
 	minMaxMovesScore(Brd, Khan, PlayerSide, MRL, Dpnss, Dpnss, MSRL), !.
+minMaxMovesScore(Brd, Khan, PlayerSide, [[Cstart,Cend]|MRL], Dpnss, Dpnss, [([Cstart, Cend],MoveScore)|MSRL]) :-
+	createBrd(Brd,Cstart, Cend, BrdRes),
+	possibleMoves(BrdRes, Cstart, PlayerSide, MovesList,_),
+	movesScore(PlayerSide, BrdRes, MovesList, MovesScoreList),
+	maxMove(MovesScoreList, (_, MoveScore)),
+	minMaxMovesScore(Brd, Khan, PlayerSide, MRL, Dpnss, Dpnss, MSRL), !.
 
+% Cas d'une profondeur intermédiaire
+% 	- Profondeur impaire => on est en 'position MIN'
+%%  - Profondeur paire => on est en 'position MAX'
+minMaxMovesScore(Brd,Khan,PlayerSide,[[Cstart,Cend]|MRL],Dpnss,Iteration,[([Cstart, Cend],MoveScore)|MSRL]) :-
+	createBrd(Brd, Cstart, Cend, BrdRes),
+	1 is mod(Dpnss,2),
+	enemyColor(PlayerSide, EnemySide),
+	possibleMoves(BrdRes, Cstart, EnemySide, MovesList,_),
+	NextIteration is Iteration + 1,
+	minMaxMovesScore(Brd, Khan, PlayerSide, MovesList, Dpnss, NextIteration, MovesScoreList),
+	minMove(MovesScoreList, (_,MoveScore)),
+	minMaxMovesScore(Brd, Khan, PlayerSide, MRL, Dpnss, Iteration, MSRL), !.
+minMaxMovesScore(Brd,Khan,PlayerSide,[[Cstart,Cend]|MRL],Dpnss,Iteration,[([Cstart, Cend],MoveScore)|MSRL]) :-
+	createBrd(Brd, Cstart, Cend, BrdRes),
+	possibleMoves(BrdRes, Cstart, PlayerSide, MovesList,_),
+	NextIteration is Iteration + 1,
+	minMaxMovesScore(Brd, Khan, PlayerSide, MovesList, Dpnss, NextIteration, MovesScoreList),
+	minMove(MovesScoreList, (_,MoveScore)),
+	minMaxMovesScore(Brd, Khan, PlayerSide, MRL, Dpnss, Iteration, MSRL).
 
+% --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+% --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
 
 /*
 	boardsFromPiecesList(Brd, piecesList, BrdsList)
@@ -61,7 +94,7 @@ boardsFromPiecesList(Brd, [P1|RestPieces], Res) :-
 */
 movesScore(_, _, [], []) :- !.
 movesScore(PlayerSide, Brd, [[Cstart,Cend]|Q],[([Cstart,Cend],Score)|NextCouples]) :-
-	modifyBrd(Brd, Cstart, Cend, BrdRes),
+	createBrd(Brd, Cstart, Cend, BrdRes),
 	score(BrdRes, PlayerSide, Score),
 	movesScore(PlayerSide, Brd, Q, NextCouples).
 
@@ -97,11 +130,10 @@ maxMove([(Move,Scr)|Q], (_, LocalMaxS), MaxMoveScoreTuple) :-
 maxMove([_|Q], (LocalMaxB, LocalMaxS), MaxMoveScoreTuple) :-
 	maxMove(Q, (LocalMaxB,LocalMaxS), MaxMoveScoreTuple).
 
-/*
-	=========================================
-	========= FONCTION SCORE ================
-	=========================================
-*/
+% ==================================================================================
+%							FONCTION Score			
+% ==================================================================================
+
 /* 
 	score(Brd, PlayerSide, Score)
 	------------------------------

@@ -127,9 +127,10 @@ writeSubColumn(N) :- wTab, write(N), write(" ").
 */
 showRows(_, [],_) :- !.
 showRows(NumLigne, [T|Q], Khan) :-
-	write(NumLigne), write(" |"),
 	N is NumLigne + 1, 
-	showCells(T, Khan, NumLigne, 1), nl, writeSubRow, showRows(N, Q, Khan).
+	write(NumLigne), write(" |"), showCellsPower(T, NumLigne, 1), nl,
+	write("  |"), showCellsContent(T, Khan, NumLigne, 1), nl,
+	writeSubRow, showRows(N, Q, Khan).
 
 % writeSubRow / writeSubRowLoop
 %"Sous"-prédicats pour boucler et faciliter l'écriture de showRows
@@ -137,33 +138,47 @@ writeSubRow :- wTab, write("+"), writeSubRowLoop(1).
 writeSubRowLoop(N) :- N<7, write("---+"), Nb is N+1, writeSubRowLoop(Nb), !.
 writeSubRowLoop(_) :- nl.
 
+
+
 /* 
-	showCells(Tuple, Row)
+	showCellsPower(Tuple, Row)
+	------------------------------
+	Affiche la puissance de la Nème cellule d'une ligne
+*/
+showCellsPower([],_,_) :- !.
+showCellsPower([Cell|Q], I, J) :-
+	writeCellPower(Cell),
+	SubJ is J + 1, showCellsPower(Q, I, SubJ), !.
+
+/* 
+	showCellsContent(Tuple, Row)
 	------------------------------
 	Affiche le contenu de la Nème cellule d'une ligne
 */
-showCells([], _,_,_) :- !.
-showCells([Cell|Q], (X,Y), I, J) :-
+showCellsContent([], _,_,_) :- !.
+showCellsContent([Cell|Q], (X,Y), I, J) :-
 	I = X, J = Y, !,
-	writeCell(Cell, true),
-	SubJ is J + 1, showCells(Q, (X,Y), I, SubJ).
-showCells([Cell|Q],Khan, I, J) :-
-	writeCell(Cell, false),
-	SubJ is J + 1, showCells(Q, Khan, I, SubJ), !.
+	writeCellContent(Cell, true),
+	SubJ is J + 1, showCellsContent(Q, (X,Y), I, SubJ).
+showCellsContent([Cell|Q],Khan, I, J) :-
+	writeCellContent(Cell, false),
+	SubJ is J + 1, showCellsContent(Q, Khan, I, SubJ), !.
 
 % writeCell
 % sous-prédicat pour showCells
-writeCell((1, empty),_) :- write(" - |"), !.
-writeCell((2, empty),_) :- write(" = |"), !.
-writeCell((3, empty),_) :- write(" # |"), !.
-writeCell((_,kr),false) :- write(" R |"), !.
-writeCell((_,ko),false) :- write(" O |"), !.
-writeCell((_,sr),false) :- write(" r |"), !.
-writeCell((_,so),false) :- write(" o |"), !.
-writeCell((_,kr),true) :- write("!R |"), !.
-writeCell((_,ko),true) :- write("!O |"), !.
-writeCell((_,sr),true) :- write("!r |"), !.
-writeCell((_,so),true) :- write("!o |"), !.
+writeCellPower((1,_)) :- write("-  |"), !.
+writeCellPower((2,_)) :- write("=  |"), !.
+writeCellPower((3,_)) :- write("#  |"), !.
+
+writeCellContent((_,empty),_) :- write("   |"), !.
+writeCellContent((_,kr),false) :- write(" R |"), !.
+writeCellContent((_,ko),false) :- write(" O |"), !.
+writeCellContent((_,sr),false) :- write(" r |"), !.
+writeCellContent((_,so),false) :- write(" o |"), !.
+writeCellContent((_,kr),true) :- write("!R |"), !.
+writeCellContent((_,ko),true) :- write("!O |"), !.
+writeCellContent((_,sr),true) :- write("!r |"), !.
+writeCellContent((_,so),true) :- write("!o |"), !.
 
 
 
