@@ -22,19 +22,19 @@ correspDifficulty(hard, 3).
 % ========================
 % Prédicat d'intialisation
 % ========================
-initBoard(Board) :-
+initBrd(Brd) :-
 	triggerMatchMenu,
-	choseBoardLoop(InitialBoard),
-	positioningPhase(InitialBoard, Board),
-	setBoard(Board).
+	choseBrdLoop(InitialBrd),
+	positioningPhase(InitialBrd, Brd),
+	setBrd(Brd).
 
 /*
-	baseBoard(N, Board)
+	baseBrd(N, Brd)
 	------------------------------
-	Unifie Board avec la Nème possibilité
+	Unifie Brd avec la Nème possibilité
 	de plateau initial
 */
-baseBoard(1, [
+baseBrd(1, [
 				[ (2,empty),(2,empty),(3,empty),(1,empty),(2,empty),(2,empty) ],
 				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(3,empty) ],
 				[ (3,empty),(1,empty),(2,empty),(2,empty),(3,empty),(1,empty) ],
@@ -42,7 +42,7 @@ baseBoard(1, [
 				[ (2,empty),(1,empty),(3,empty),(1,empty),(3,empty),(2,empty) ],
 				[ (1,empty),(3,empty),(2,empty),(2,empty),(1,empty),(3,empty) ]
 			]).
-baseBoard(2, [
+baseBrd(2, [
 				[ (1,empty),(2,empty),(2,empty),(3,empty),(1,empty),(2,empty) ],
 				[ (3,empty),(1,empty),(3,empty),(1,empty),(3,empty),(2,empty) ],
 				[ (2,empty),(3,empty),(1,empty),(2,empty),(1,empty),(3,empty) ],
@@ -50,7 +50,7 @@ baseBoard(2, [
 				[ (1,empty),(3,empty),(1,empty),(3,empty),(1,empty),(2,empty) ],
 				[ (3,empty),(2,empty),(2,empty),(1,empty),(3,empty),(2,empty) ]
 			]).
-baseBoard(3, [
+baseBrd(3, [
 				[ (3,empty),(1,empty),(2,empty),(2,empty),(3,empty),(1,empty) ],
 				[ (2,empty),(3,empty),(1,empty),(3,empty),(1,empty),(2,empty) ],
 				[ (2,empty),(1,empty),(3,empty),(1,empty),(3,empty),(2,empty) ],
@@ -58,7 +58,7 @@ baseBoard(3, [
 				[ (3,empty),(1,empty),(3,empty),(1,empty),(3,empty),(1,empty) ],
 				[ (2,empty),(2,empty),(1,empty),(3,empty),(2,empty),(2,empty) ]
 			]).
-baseBoard(4, [
+baseBrd(4, [
 				[ (2,empty),(3,empty),(1,empty),(2,empty),(2,empty),(3,empty) ],
 				[ (2,empty),(1,empty),(3,empty),(1,empty),(3,empty),(1,empty) ],
 				[ (1,empty),(3,empty),(2,empty),(3,empty),(1,empty),(2,empty) ],
@@ -128,35 +128,35 @@ typeMatchMenu :-
 	============================================================
 */
 
-triggerBoardChoice(X, Board) :-
-	X > 0, X < 4, !, 
+triggerBrdChoice(X, Brd) :-
+	X >= 1, X =< 4, !, 
 	nl, write("Vous avez choisi le tableau "), write(X), write(" !"),
-	baseBoard(X, Board), nl.
-triggerBoardChoice(_,_) :-
+	baseBrd(X, Brd), nl.
+triggerBrdChoice(_,_) :-
 	nl, write("Veuillez choisir un plateau entre 1 et 4 ... "), nl,
 	fail.
 
 /*
-	choseBoardMenu
+	choseBrdMenu
 	------------------------------
 	Affiche le menu de choix de plateau de départ
 	récupère l'entrée de l'utilisateur,
 	et réagit en conséquence
 */
-choseBoardMenu(Board) :-
+choseBrdMenu(Brd) :-
 	nl, wSep(15), nl, 
 	write("Choisissez un plateau : (tapez de 1 a 4)"), nl,
-	read(CHOICE), nl, triggerBoardChoice(CHOICE, Board), nl.
+	read(CHOICE), nl, triggerBrdChoice(CHOICE, Brd), nl.
 
 /*
-	choseBoardLoop
+	choseBrdLoop
 	------------------------------
 	Lance la boucle de choix du plateau de départ
 */
-choseBoardLoop(Board) :-
+choseBrdLoop(Brd) :-
 	wSep(50), nl, wTab, wTab, write("Choix du plateau de depart"), nl, wSep(50), nl,
-	showAllBaseBoards,
-	repeat, choseBoardMenu(Board), !.
+	showAllBaseBrds,
+	repeat, choseBrdMenu(Brd), !.
 
 /* 
 	============================================================
@@ -173,16 +173,16 @@ choseBoardLoop(Board) :-
 	Lance les différentes étapes de positionnement
 	des pièces
 */
-positioningPhase(Board, ResBoard) :- 
+positioningPhase(Brd, ResBrd) :- 
 	nl, nl, multipleWSep(3, 60), 
 	wTab, write("Positionnement des pieces, camp ROUGE"), nl,
-	playerPositioning(Board, rouge, SubBoard),
+	playerPositioning(Brd, rouge, SubBrd),
 	nl, nl, multipleWSep(3, 60), 
 	wTab, write("Positionnement des pieces, camp OCRE"), nl,
-	playerPositioning(SubBoard, ocre, ResBoard),
+	playerPositioning(SubBrd, ocre, ResBrd),
 	nl, multipleWSep(4, 60), 
 	nl, writeln("Plateau de depart : "),
-	showBoard(ResBoard, (0,0)), !.
+	showBrd(ResBrd, (0,0)), !.
 
 /*
 	playerPositioning
@@ -190,63 +190,63 @@ positioningPhase(Board, ResBoard) :-
 	Lance le positionnement (IA ou Homme)
 	selon le type de joueur qu'est le joueur
 	du camp PlayerSide.
-	Unifie le résultat du positionnement avec ResBoard.
+	Unifie le résultat du positionnement avec ResBrd.
 */
-playerPositioning(Board, PlayerSide, ResBoard) :-
+playerPositioning(Brd, PlayerSide, ResBrd) :-
 	player(PlayerSide, homme), !,
-	humanPositioningMenu(Board, 1, PlayerSide, ResBoard).
-playerPositioning(Board, PlayerSide, ResBoard) :-
-	iaPositioningMenu(Board, 1, PlayerSide, ResBoard).
+	humanPositioningMenu(Brd, 1, PlayerSide, ResBrd).
+playerPositioning(Brd, PlayerSide, ResBrd) :-
+	iaPositioningMenu(Brd, 1, PlayerSide, ResBrd).
 
 /*
 	humanPositioningMenu
 	------------------------------
 	Lance le positionnement humain du joueur
 	du camp PlayerSide
-	Unifie le résultat du positionnement avec ResBoard.
+	Unifie le résultat du positionnement avec ResBrd.
 */
-humanPositioningMenu(Board, 6, PlayerSide, ResBoard) :- 
+humanPositioningMenu(Brd, 6, PlayerSide, ResBrd) :- 
 	repeat, nl, wSep(20), nl,
-	showBoard(Board, (0,0)),
+	showBrd(Brd, (0,0)),
 	write(" [Joueur "), write(PlayerSide), writeln("] => position de la Kalista"),
-	writeln("Inserez les coordonnees dans ce format : X,Y"),
-	read(CHOICE), validPositioning(Board, PlayerSide, CHOICE, CellPower),
+	write("Inserez les coordonnees dans ce format : X,Y "),
+	read(CHOICE), validPositioning(Brd, PlayerSide, CHOICE, CellPower),
 	pieceType(PlayerSide, kalista, Type),
-	setCell(Board, (CellPower, Type), CHOICE, ResBoard).
-humanPositioningMenu(Board, N, PlayerSide, ResBoard) :- 
+	setCell(Brd, (CellPower, Type), CHOICE, ResBrd).
+humanPositioningMenu(Brd, N, PlayerSide, ResBrd) :- 
 	repeat, nl, wSep(20), nl,
-	showBoard(Board, (0,0)),
+	showBrd(Brd, (0,0)),
 	write(" [Joueur "), write(PlayerSide), write("] => position du sbire "),
-	writeln(N), writeln("Inserez les coordonnees dans ce format : X,Y"),
-	read(CHOICE),validPositioning(Board, PlayerSide, CHOICE, CellPower),
+	writeln(N), write("Inserez les coordonnees dans ce format : X,Y "),
+	read(CHOICE),validPositioning(Brd, PlayerSide, CHOICE, CellPower),
 	M is N + 1,
 	pieceType(PlayerSide, sbire, Type),
-	setCell(Board, (CellPower, Type), CHOICE, SubBoard),
-	humanPositioningMenu(SubBoard, M, PlayerSide, ResBoard).
+	setCell(Brd, (CellPower, Type), CHOICE, SubBrd),
+	humanPositioningMenu(SubBrd, M, PlayerSide, ResBrd).
 
 /*
 	iaPositioningMenu
 	------------------------------
 	Lance le positionnement IA du joueur
 	du camp PlayerSide
-	Unifie le résultat du positionnement avec ResBoard.
+	Unifie le résultat du positionnement avec ResBrd.
 */
-iaPositioningMenu(Board, 7, PlayerSide, Board) :- 
+iaPositioningMenu(Brd, 7, PlayerSide, Brd) :- 
 	nl, write("Positionnement de l'IA du camp "), writeln(PlayerSide),
-	showBoard(Board, (0,0)), !.
-iaPositioningMenu(Board, 6, PlayerSide, ResBoard) :-
+	showBrd(Brd, (0,0)), !.
+iaPositioningMenu(Brd, 6, PlayerSide, ResBrd) :-
 	repeat, generateRandomStartPosition(PlayerSide, (X,Y)),
-	cell(X,Y, Board, (CellPower,empty)),
+	cell(X,Y, Brd, (CellPower,empty)),
 	pieceType(PlayerSide, kalista, Type),
-	setCell(Board, (CellPower, Type), (X,Y), SubBoard),
-	iaPositioningMenu(SubBoard, 7, PlayerSide, ResBoard).
-iaPositioningMenu(Board, N, PlayerSide, ResBoard) :-
+	setCell(Brd, (CellPower, Type), (X,Y), SubBrd),
+	iaPositioningMenu(SubBrd, 7, PlayerSide, ResBrd).
+iaPositioningMenu(Brd, N, PlayerSide, ResBrd) :-
 	repeat, generateRandomStartPosition(PlayerSide, (X,Y)),
-	cell(X,Y, Board, (CellPower,empty)),
+	cell(X,Y, Brd, (CellPower,empty)),
 	M is N+1,
 	pieceType(PlayerSide, sbire, Type),
-	setCell(Board, (CellPower, Type), (X,Y), SubBoard),
-	iaPositioningMenu(SubBoard, M, PlayerSide, ResBoard).
+	setCell(Brd, (CellPower, Type), (X,Y), SubBrd),
+	iaPositioningMenu(SubBrd, M, PlayerSide, ResBrd).
 
 generateRandomStartPosition(ocre, (X,Y)) :-
 	random(1,3,X), random(1,7,Y).

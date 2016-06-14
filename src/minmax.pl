@@ -5,56 +5,71 @@
 */
 
 /*
-	minMaxBoard, PlayerSide, ResBoard)
+	minMaxBrd, PlayerSide, ResBrd)
 	------------------------------
-	Unifie ResBoard avec le plateau optimal
+	Unifie ResBrd avec le plateau optimal
 	selon l'algorithme MinMax
 
 	BestMove de la forme
 	[(Xstart, Ystart), (Xend, Yend)]
 */
 
-generateMove(Board, PlayerSide, BestMove) :-
+generateMove(Brd, Khan, PlayerSide, BestMove) :-
 	difficulty(Deepness),
-	minMax(Board, PlayerSide, Deepness, 1, (BestMove,_)).
+	minMax(Brd, Khan, PlayerSide, Deepness, (BestMove,_)).
 
-minMax(Board, PlayerSide, Deepness, Iteration, BestMoveTuple) :-
-	Iteration = Deepness,
-	possibleMoves(Board, PlayerSide, MovesList),
-	movesScore(PlayerSide, Board, MovesList, MovesScoreList),
+
+minMax(Brd, Khan, PlayerSide, 1, BestMoveTuple) :-
+	possibleMoves(Brd, Khan, PlayerSide, MovesList,_),
+	movesScore(PlayerSide, Brd, MovesList, MovesScoreList),
 	maxMove(MovesScoreList, BestMoveTuple), !.
+minMax(Brd, Khan, PlayerSide, Deepness, BestMoveTuple) :-
+	possibleMoves(Brd, Khan, PlayerSide, MovesList,_),
+	SubDeepness is Deepness - 1,
+	minMaxMovesScore(Brd, Khan, PlayerSide, MovesList, SubDeepness, 1, MovesScoreList),
+	maxMove(MovesScoreList, BestMoveTuple).
+
+minMaxMovesScore(_,_,_, [],_,_, []) :- !.
+minMaxMovesScore(Brd, Khan, PlayerSide, [[Cstart,Cend]|MRL], Dpnss, Dpnss, [([Cstart, Cend],MoveScore)|MSRL]) :-
+	modifyBrd(Brd,Cstart, Cend, BrdRes),
+	1 is mod(Dpnss,2),
+	enemyColor(PlayerSide, EnemySide),
+	possibleMoves(BrdRes, Cstart, EnemySide, MovesList,_),
+	movesScore(PlayerSide, BrdRes, MovesList, MovesScoreList),
+	minMove(MovesScoreList, (_, MoveScore)),
+	minMaxMovesScore(Brd, Khan, PlayerSide, MRL, Dpnss, Dpnss, MSRL), !.
+
+
 
 /*
-	boardsFromPiecesList(Board, piecesList, BoardsList)
+	boardsFromPiecesList(Brd, piecesList, BrdsList)
 	------------------------------
 	Retourne la liste complète des plateaux que l'on peut obtenir
 	en partant d'une des pièces de piecesList
 */
 boardsFromPiecesList(_, [], []) :- !.
-boardsFromPiecesList(Board, [P1|RestPieces], Res) :-
-	boardsFrom(3, Board, P1, SubRes1),
-	boardsFromPiecesList(Board, RestPieces, SubRes2),
+boardsFromPiecesList(Brd, [P1|RestPieces], Res) :-
+	boardsFrom(3, Brd, P1, SubRes1),
+	boardsFromPiecesList(Brd, RestPieces, SubRes2),
 	concat(SubRes1, SubRes2, Res).
 
-	
-% movesScore(PlayerSide, Board, MovesList, MovesScoreList)
 /* 
-	boardsScore(BoardsList, BoardAndScoreList)
+	boardsScore(BrdsList, BrdAndScoreList)
 	------------------------------
-	Associe dans une nouvelle liste BoardAndScoreList
+	Associe dans une nouvelle liste BrdAndScoreList
 	un plateau et son score évalué
 */
 movesScore(_, _, [], []) :- !.
-movesScore(PlayerSide, Board, [[Cstart,Cend]|Q],[([Cstart,Cend],Score)|NextCouples]) :-
-	modifyBoard(Board, Cstart, Cend, BoardRes),
-	score(BoardRes, PlayerSide, Score),
-	movesScore(PlayerSide, Board, Q, NextCouples).
+movesScore(PlayerSide, Brd, [[Cstart,Cend]|Q],[([Cstart,Cend],Score)|NextCouples]) :-
+	modifyBrd(Brd, Cstart, Cend, BrdRes),
+	score(BrdRes, PlayerSide, Score),
+	movesScore(PlayerSide, Brd, Q, NextCouples).
 
 /* 
-	minBoard(BoardsAndScoreList, Board)
+	minBrd(BrdsAndScoreList, Brd)
 	------------------------------
-	Unifie MinBoardScoreTuple
-	avec le tuple (Board, Score) du plateau
+	Unifie MinBrdScoreTuple
+	avec le tuple (Brd, Score) du plateau
 	avec le plus petit score
 */
 minMove([FirstMove|Q], MinMoveScoreTuple) :-
@@ -67,10 +82,10 @@ minMove([_|Q], (LocalMinB, LocalMinS), MinMoveScoreTuple) :-
 	minMove(Q, (LocalMinB,LocalMinS), MinMoveScoreTuple).
 
 /* 
-	maxBoard(BoardsAndScoreList, Board)
+	maxBrd(BrdsAndScoreList, Brd)
 	------------------------------
-	Unifie MaxBoardScoreTuple
-	avec le tuple (Board, Score) du plateau
+	Unifie MaxBrdScoreTuple
+	avec le tuple (Brd, Score) du plateau
 	avec le plus gros score
 */
 maxMove([FirstMove|Q], MaxMoveScoreTuple) :-
@@ -88,62 +103,62 @@ maxMove([_|Q], (LocalMaxB, LocalMaxS), MaxMoveScoreTuple) :-
 	=========================================
 */
 /* 
-	score(Board, PlayerSide, Score)
+	score(Brd, PlayerSide, Score)
 	------------------------------
 	Unifie Score avec le score évalué
-	par rapport à l'état du plateau dans Board
+	par rapport à l'état du plateau dans Brd
 	et le côté du joueur (ocre ou rouge) dans PlayerSide
 */
-score(Board, PlayerSide, Score)	:- 
-	subScoreOwnKalistaDead(Board, PlayerSide, SC1),
+score(Brd, PlayerSide, Score)	:- 
+	subScoreOwnKalistaDead(Brd, PlayerSide, SC1),
 	SC1 = -10000, Score is SC1, !;
-	subScoreEnemyKalistaDead(Board, PlayerSide, SC2),
+	subScoreEnemyKalistaDead(Brd, PlayerSide, SC2),
 	SC2 = 10000, Score is SC2, !;
-	subScoreLonelyKalista(Board, PlayerSide, SC3),
-	subScoreLessPiecesThanEnemy(Board, PlayerSide, SC4),
-	subScoreDistanceFromEnemyKalista(Board, PlayerSide, SC5),
-	subScoreNumberOfPower2(Board,PlayerSide, SC6),
+	subScoreLonelyKalista(Brd, PlayerSide, SC3),
+	subScoreLessPiecesThanEnemy(Brd, PlayerSide, SC4),
+	subScoreDistanceFromEnemyKalista(Brd, PlayerSide, SC5),
+	subScoreNumberOfPower2(Brd,PlayerSide, SC6),
 	Score is SC3+SC4+SC5+SC6.
 
 
 /* 
-	subScoreOwnKalistaDead(Board, PlayerSide, ResultScore)
+	subScoreOwnKalistaDead(Brd, PlayerSide, ResultScore)
 	------------------------------
 	Unifie ResultScore avec :
 		- 0 si la Kalista du joueur n'est pas morte
 		- -10000 sinon
 */
-subScoreOwnKalistaDead(Board, PlayerSide, ResultScore) :-
-	\+positionKalista(Board, PlayerSide,_),
+subScoreOwnKalistaDead(Brd, PlayerSide, ResultScore) :-
+	\+positionKalista(Brd, PlayerSide,_),
 	ResultScore is -10000, !.
 subScoreOwnKalistaDead(_,_, 0).
 
 /* 
-	subScoreEnemyKalistaDead(Board, PlayerSide, ResultScore)
+	subScoreEnemyKalistaDead(Brd, PlayerSide, ResultScore)
 	------------------------------
 	Unifie ResultScore avec :
 		- 0 si la Kalista ennemie du joueur n'est pas morte
 		- 10000 sinon
 */
-subScoreEnemyKalistaDead(Board, PlayerSide, ResultScore) :-
-	enemyColor(PlayerSide, EnemySide), \+positionKalista(Board, EnemySide,_),
+subScoreEnemyKalistaDead(Brd, PlayerSide, ResultScore) :-
+	enemyColor(PlayerSide, EnemySide), \+positionKalista(Brd, EnemySide,_),
 	ResultScore is 10000, !.
 subScoreEnemyKalistaDead(_,_, 0).
 
 /* 
-	subScoreLonelyKalista(Board, PlayerSide, ResultScore)
+	subScoreLonelyKalista(Brd, PlayerSide, ResultScore)
 	------------------------------
 	Unifie ResultScore avec :
 		- 350 si la Kalista du joueur est seule
 		- 0 sinon
 */
-subScoreLonelyKalista(Board, PlayerSide, ResultScore) :-
-	\+notLonelyKalista(Board, PlayerSide),
+subScoreLonelyKalista(Brd, PlayerSide, ResultScore) :-
+	\+notLonelyKalista(Brd, PlayerSide),
 	ResultScore is 350, !.
 subScoreLonelyKalista(_,_,0).
 
 % sous-prédicat pour le prédicat "subScoreEnemyKalistaDead"
-% Retourne vrai si on trouve un sbire du bon côté dans le Board
+% Retourne vrai si on trouve un sbire du bon côté dans le Brd
 notLonelyKalista([X|_], PlayerSide) :-
 	subNotLonelyKalista(X, PlayerSide).
 notLonelyKalista([_|Q], PlayerSide) :-
@@ -156,15 +171,15 @@ subNotLonelyKalista([_|Q], PlayerSide) :-
 	subNotLonelyKalista(Q, PlayerSide).
 
 /* 
-	subScoreLessPiecesThanEnemy(Board, PlayerSide, ResultScore)
+	subScoreLessPiecesThanEnemy(Brd, PlayerSide, ResultScore)
 	------------------------------
 	Unifie ResultScore avec :
 		50 * (différence de pions entre le joueur et son adversaire)
 */
-subScoreLessPiecesThanEnemy(Board, PlayerSide, ResultScore) :-
+subScoreLessPiecesThanEnemy(Brd, PlayerSide, ResultScore) :-
 	enemyColor(PlayerSide, EnemySide),
-	countPieces(Board, PlayerSide, COUNT1),
-	countPieces(Board, EnemySide, COUNT2),
+	countPieces(Brd, PlayerSide, COUNT1),
+	countPieces(Brd, EnemySide, COUNT2),
 	ResultScore is 50*(-COUNT1+ COUNT2).
 
 % prédicat principalement utilisé pour "subScoreLessPiecesThanEnemy"
@@ -183,18 +198,18 @@ subCountPieces([_|Q],PlayerSide, Count) :-
 	subCountPieces(Q,PlayerSide, Count), !.
 
 /* 
-	subScoreDistanceFromEnemyKalista(Board, PlayerSide, ResultScore)
+	subScoreDistanceFromEnemyKalista(Brd, PlayerSide, ResultScore)
 	------------------------------
 	Unifie ResultScore avec :
 		la valeur négative de la 3 * distance moyenne entre les pions
 		et la kalista ennemie
 	Plus la distance moyenne est grande, plus on est pénalisé
 */
-subScoreDistanceFromEnemyKalista(Board, PlayerSide, ResultScore) :-
+subScoreDistanceFromEnemyKalista(Brd, PlayerSide, ResultScore) :-
 	enemyColor(PlayerSide, EnemySide),
-	positionKalista(Board, EnemySide, PosEnemyKalista),
-	sumDistancesFromEnemyKalista(Board, PlayerSide, PosEnemyKalista, (1,1), SumDistances),
-	countPieces(Board, PlayerSide, NumberOfPieces),
+	positionKalista(Brd, EnemySide, PosEnemyKalista),
+	sumDistancesFromEnemyKalista(Brd, PlayerSide, PosEnemyKalista, (1,1), SumDistances),
+	countPieces(Brd, PlayerSide, NumberOfPieces),
 	SubResultScore is SumDistances/NumberOfPieces,
 	ResultScore is ceil(SubResultScore) * -3.
 
@@ -220,13 +235,13 @@ distancePos((PosX1, PosY1), (PosX2,PosY2), Distance) :-
 	Distance is abs(PosX1 - PosX2) + abs(PosY1 - PosY2).
 
 /* 
-	subScoreNumberOfPower2(Board, PlayerSide, ResultScore)
+	subScoreNumberOfPower2(Brd, PlayerSide, ResultScore)
 	------------------------------
 	Unifie ResultScore avec 
 		- 25 * (nombre de pions sur une case de 2)
 */
-subScoreNumberOfPower2(Board, PlayerSide, ResultScore) :-
-	numberOfPowerX(Board, PlayerSide, 2, NumberOf2),
+subScoreNumberOfPower2(Brd, PlayerSide, ResultScore) :-
+	numberOfPowerX(Brd, PlayerSide, 2, NumberOf2),
 	ResultScore is -25 * NumberOf2.
 
 % prédicat principalement utilisé pour "subScoreNumberOfPower2"

@@ -15,24 +15,24 @@
 %	==================================================================
 
 /* 
-	cell(X,Y, Board, Res)
+	cell(X,Y, Brd, Res)
 	------------------------------
 	Unifie Res avec le tuple présent dans le plateau
 	aux coordonnées (X,Y)
 */
-cell(X, Y, Board, Res) :- 
-	rowFromBoard(X, Board, RowRes),
+cell(X, Y, Brd, Res) :- 
+	rowFromBrd(X, Brd, RowRes),
 	cellFromRow(Y, RowRes, Res).
-rowFromBoard(1, [X|_], X) :- !.
-rowFromBoard(R,[_|Q], Res) :- R2 is R-1, rowFromBoard(R2, Q, Res).
+rowFromBrd(1, [X|_], X) :- !.
+rowFromBrd(R,[_|Q], Res) :- R2 is R-1, rowFromBrd(R2, Q, Res).
 cellFromRow(1, [X|_], X) :- !.
 cellFromRow(R, [_|Q], Res) :- R2 is R-1, cellFromRow(R2, Q, Res).
 
 /* 
-	positionKalista(Board,PlayerSide, Position)
+	positionKalista(Brd,PlayerSide, Position)
 	------------------------------
 	Unifie Position avec la position du Kalista
-	côté PlayerSide grâce au Board.
+	côté PlayerSide grâce au Brd.
 	Renvoie faux si la Kalista est morte
 */
 positionKalista([X|_], PlayerSide, Position) :-
@@ -99,7 +99,7 @@ pieceOfPower2AndColor((2,ko), ocre).
 pieceOfPower2AndColor((2,so), ocre).
 
 /*
-	validPositioning(Board, PlayerSide, C)
+	validPositioning(Brd, PlayerSide, C)
 	------------------------------
 	Prédicat qui vérifie qu'une entrée de position de départ
 	est valide.
@@ -109,9 +109,9 @@ pieceOfPower2AndColor((2,so), ocre).
 */
 
 % --------- Cas du côté ROUGE
-validPositioning(Board, rouge, (X, Y), CellPower) :-
+validPositioning(Brd, rouge, (X, Y), CellPower) :-
 	X >= 5, X =< 6, Y >= 1, Y =< 6,
-	cell(X, Y, Board, (CellPower,empty)), !.
+	cell(X, Y, Brd, (CellPower,empty)), !.
 % Cas où la cellule n'est pas vide
 validPositioning(_, rouge, (X,Y),_) :-
 	X >= 5, X =< 6, Y >= 1, Y =< 6,
@@ -122,9 +122,9 @@ validPositioning(_, rouge,_,_) :-
 	nl, multipleWSep(2, 60),
 	nl, writeln("Coordonnees invalides, elles doivent etre comprises entre (5,1) et (6,6)"), fail.
 % --------- Cas du côté OCRE
-validPositioning(Board, ocre, (X, Y), CellPower) :-
+validPositioning(Brd, ocre, (X, Y), CellPower) :-
 	X >= 1, X =< 2, Y >= 1, Y =< 6,
-	cell(X, Y, Board, (CellPower,empty)), !.
+	cell(X, Y, Brd, (CellPower,empty)), !.
 % Cas où la cellule n'est pas vide
 validPositioning(_, ocre, (X, Y),_) :-
 	X >= 1, X =< 2, Y >= 1, Y =< 6,

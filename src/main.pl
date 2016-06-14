@@ -30,8 +30,8 @@
 	Lance le jeu
 */
 startGame :-
-	initBoard(Board),
-	setBoard(Board),
+	initBrd(Brd),
+	setBrd(Brd),
 	setKhan((0,0)),
 	gameRoundLoop(rouge).
 
@@ -42,25 +42,25 @@ startGame :-
 	Termine si l'une des Kalista est morte.
 */
 gameRoundLoop(_) :-
-	board(Board), khan(Khan), \+positionKalista(Board, ocre, _), !,
+	board(Brd), khan(Khan), \+positionKalista(Brd, ocre, _), !,
 	nl, multipleWSep(2, 60), nl,
 	writeln("Le joueur ROUGE est gagnant !"),
 	writeln("Tableau de fin :"),
-	nl, showBoard(Board, Khan),
+	nl, showBrd(Brd, Khan),
 	nl, multipleWSep(2, 60), nl.
 gameRoundLoop(_) :-
-	board(Board), khan(Khan), \+positionKalista(Board, rouge, _), !,
+	board(Brd), khan(Khan), \+positionKalista(Brd, rouge, _), !,
 	nl, multipleWSep(2, 60), nl,
 	writeln("Le joueur OCRE est gagnant !"),
 	writeln("Tableau de fin :"),
-	nl, showBoard(Board, Khan),
+	nl, showBrd(Brd, Khan),
 	nl, multipleWSep(2, 60), nl.
 gameRoundLoop(PlayerSide) :-
-	board(Board), khan(Khan),
+	board(Brd), khan(Khan),
 	nl, multipleWSep(3, 60), nl,
 	wTab, write("C est au tour du joueur "), write(PlayerSide), writeln(" ..."),
-	nl, showBoard(Board, Khan), nl,
-	doRound(Board, PlayerSide),
+	nl, showBrd(Brd, Khan), nl,
+	doRound(Brd, PlayerSide),
 	enemyColor(PlayerSide, EnemySide),
 	gameRoundLoop(EnemySide).
 
@@ -70,16 +70,19 @@ gameRoundLoop(PlayerSide) :-
 	Exécution d'un round
 	selon si le joueur est humain ou une IA
 */
-doRound(Board, PlayerSide) :-
+doRound(Brd, PlayerSide) :-
 	player(PlayerSide, ia), !,
-	generateMove(Board, PlayerSide, [StartPosition, EndPosition]),
-	modifyBoard(Board, StartPosition, EndPosition, BoardRes),
-	setKhan(EndPosition), setBoard(BoardRes).	
-doRound(Board, PlayerSide) :-
-	possibleMoves(Board, PlayerSide, PossibleMoves),
+	khan(Khan),
+	generateMove(Brd, Khan, PlayerSide, [StartPosition, EndPosition]),
+	modifyBrd(Brd, StartPosition, EndPosition, BrdRes),
+	setKhan(EndPosition), setBrd(BrdRes).	
+doRound(Brd, PlayerSide) :-
+	khan(Khan),
+	possibleMoves(Brd, Khan, PlayerSide, PossibleMoves, RestrictiveKhan),
+	restrictiveKhanMessage(RestrictiveKhan),
 	askTheMove(PossibleMoves, [StartPosition, EndPosition]),
-	modifyBoard(Board, StartPosition, EndPosition, BoardRes),
-	setKhan(EndPosition), setBoard(BoardRes).
+	modifyBrd(Brd, StartPosition, EndPosition, BrdRes),
+	setKhan(EndPosition), setBrd(BrdRes).
 
 askTheMove(PossibleMoves, Move) :-
 	nl, wSep(60), nl,
@@ -102,7 +105,7 @@ moveAskedPossible(_,_,_).
 	============================================================
 	============================================================
 */
-:- setDifficulty(easy).
+:- setDifficulty(normal).
 :- dynamic player/2.
 :- dynamic khan/1.
 % Aide débuggage

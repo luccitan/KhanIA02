@@ -29,11 +29,11 @@ setPlayer(PlayerColor, PlayerType) :-
 	Teste d'abord le retract si il y existe déjà un fait
 	Sinon, il l'ajoute.
 */
-setBoard(Board) :-
+setBrd(Brd) :-
 	retract(board(_)),
-	assertz(board(Board)), !.
-setBoard(Board) :-
-	assertz(board(Board)).
+	assertz(board(Brd)), !.
+setBrd(Brd) :-
+	assertz(board(Brd)).
 
 /*
 	setKhan(Tab)

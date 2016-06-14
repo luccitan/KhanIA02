@@ -45,6 +45,16 @@ writeMatchChoiceTypeAlert(_) :-
 	write("/!\\ Vous avez fait un mauvais choix ! Recommencez !"),
 	fail.
 
+/*
+	restrictiveKhanMessage
+	------------------------------
+	Prédicat utilisé pour afficher un message d'info / alerte
+	à l'utilisateur lors de sa demande de mouvements
+*/
+restrictiveKhanMessage(true) :-
+	writeln("Le Khan est trop restrictif:  chaque piece est amovible ...").
+restrictiveKhanMessage(false).
+
 /* 
 	writeChoiceText(N)
 	------------------------------
@@ -65,33 +75,33 @@ writeMatchChoiceTypeText(3) :- write("IA vs IA."), !.
 */
 
 /* 
-	showAllBaseBoard
+	showAllBaseBrd
 	------------------------------
 	Liste les plateaux de départs
 */
-showAllBaseBoards :-
-	subShowAllBaseBoards(1), subShowAllBaseBoards(2),
-	subShowAllBaseBoards(3), subShowAllBaseBoards(4).
+showAllBaseBrds :-
+	subShowAllBaseBrds(1), subShowAllBaseBrds(2),
+	subShowAllBaseBrds(3), subShowAllBaseBrds(4).
 
-subShowAllBaseBoards(N) :-
+subShowAllBaseBrds(N) :-
 	wSep(30), nl, wTab, write("PLATEAU "), writeln(N), wSep(30), nl,
-	baseBoard(N, Board), showBoard(Board, (0,0)), nl, nl.
+	baseBrd(N, Brd), showBrd(Brd, (0,0)), nl, nl.
 
 /* 
-	showCurrentBoard
+	showCurrentBrd
 	------------------------------
 	Affiche le contenu du plateau actuel
 */
-showCurrentBoard :- board(Board), khan(Khan),
-		showColumns, showBoard(Board, Khan).
+showCurrentBrd :- board(Brd), khan(Khan),
+		showColumns, showBrd(Brd, Khan).
 
 /* 
-	showBoard
+	showBrd
 	------------------------------
-	Affiche le contenu du plateau Board
+	Affiche le contenu du plateau Brd
 */
-showBoard(Board, Khan) :-
-	showColumns, showRows(1, Board, Khan).
+showBrd(Brd, Khan) :-
+	showColumns, showRows(1, Brd, Khan).
 
 /* 
 	showColumns
