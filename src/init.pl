@@ -248,6 +248,13 @@ iaPositioningMenu(Brd, N, PlayerSide, ResBrd) :-
 	setCell(Brd, (CellPower, Type), (X,Y), SubBrd),
 	iaPositioningMenu(SubBrd, M, PlayerSide, ResBrd).
 
+
+/*
+	generateRandomStartPosition
+	------------------------------
+	Génére des coordonnées aléatoires pour
+	le placement des pions pour l'IA
+*/
 generateRandomStartPosition(ocre, (X,Y)) :-
 	random(1,3,X), random(1,7,Y).
 generateRandomStartPosition(rouge, (X,Y)) :-

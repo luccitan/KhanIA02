@@ -2,9 +2,37 @@
 %							ALGORITHME MinMax			
 % ==================================================================================
 
+% L'algorithme MinMax présente un désavantage :
+% 	 => si la prévision se fait trop loin, la possibilité simple de
+%	 manger la Kalista ennemie peut être évitée.
+% Pour cela, on teste d'abord la profondeur 1, et on regarde si on peut
+% manger directement la Kalista ennemie. 
+%     - Si oui, on le fait directement
+%	  - Sinon, si une profondeur plus grande était recherchée, 
+%     on réitère en incrémentant la profondeur de test
+% On s'arrêtera donc au maximum à la profondeur maximale fixée (== difficulté)
+
 generateMove(Brd, Khan, PlayerSide, BestMove) :-
 	difficulty(Deepness),
-	minMax(Brd, Khan, PlayerSide, Deepness, (BestMove,_)).
+	generateMove(Brd, Khan, PlayerSide, BestMove, 1, Deepness), !.
+
+% Cas où l'itération d'essai est la profondeur maximale autorisée
+generateMove(Brd, Khan, PlayerSide, BestMove, Deeptry, Deeptry) :-
+	minMax(Brd, Khan, PlayerSide, Deeptry, (BestMove,_)), !.
+% Cas où l'itération d'essai amène à une victoire instantanée : on la privilégie
+generateMove(Brd, Khan, PlayerSide, BestMove, DeepTry, _) :-
+	minMax(Brd, Khan, PlayerSide, DeepTry, ([Cstart,Cend],_)),
+	createBrd(Brd, Cstart, Cend, BrdRes),
+	enemyColor(PlayerSide, EnemySide), \+positionKalista(BrdRes, EnemySide, _),
+	BestMove = [Cstart, Cend], !.
+% Cas par défaut : on essaie de prévoir plus loin.
+generateMove(Brd, Khan, PlayerSide, BestMove, DeepTry, Deepness) :-
+	minMax(Brd, Khan, PlayerSide, DeepTry, ([Cstart,Cend],_)),
+	createBrd(Brd, Cstart, Cend, BrdRes),
+	enemyColor(PlayerSide, EnemySide), positionKalista(BrdRes, EnemySide, _),
+	NextTry is DeepTry + 1,
+	generateMove(Brd, Khan, PlayerSide, BestMove, NextTry, Deepness).
+
 
 /*
 	minMax(Brd,Khan, PlayerSide, ResBrd)

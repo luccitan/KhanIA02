@@ -32,16 +32,6 @@ concat([], L, L) :- !.
 concat(L, [], L) :- !.
 concat([T|Q], L2, [T|Res]) :- concat(Q, L2, Res).
 
-
-/*
-	retire_element(X, L1, L2)
-	------------------------------
-	Prédicat qui déplace dans L2 la première occurence de l'élément X dans L
-*/
-retire_element(_, [], []) :- !.
-retire_element(X, [X|Q], Q) :- !.
-retire_element(X, [T|Q], [T|Res]) :- retire_element(X, Q, Res).
-
 /*
 	retire_elements(X, L1, L2)
 	------------------------------

@@ -33,6 +33,7 @@ startGame :-
 	initBrd(Brd),
 	setBrd(Brd),
 	setKhan((0,0)),
+	nl, writeln("Inserez une valeur aleatoire pour commencer..."), read(_),
 	gameRoundLoop(rouge).
 
 /*
@@ -58,8 +59,8 @@ gameRoundLoop(_) :-
 gameRoundLoop(PlayerSide) :-
 	board(Brd), khan(Khan),
 	nl, multipleWSep(3, 60), nl,
-	wTab, write("C est au tour du joueur "), write(PlayerSide), writeln(" ..."),
 	nl, showBrd(Brd, Khan), nl,
+	wTab, write("C est au tour du joueur "), write(PlayerSide), writeln(" ..."),
 	doRound(Brd, PlayerSide),
 	enemyColor(PlayerSide, EnemySide),
 	gameRoundLoop(EnemySide).
@@ -105,7 +106,7 @@ moveAskedPossible(_,_,_).
 	============================================================
 	============================================================
 */
-:- setDifficulty(normal).
+:- setDifficulty(hard).
 :- dynamic player/2.
 :- dynamic khan/1.
 % Aide débuggage

@@ -16,7 +16,7 @@
 	Sinon, il l'ajoute.
 */
 setPlayer(PlayerColor, PlayerType) :-
-	retract(player(PlayerColor,_)),
+	retractall(player(PlayerColor,_)),
 	asserta((player(PlayerColor, PlayerType))), !.
 setPlayer(PlayerColor, PlayerType) :-
 	asserta((player(PlayerColor, PlayerType))), !.
@@ -30,7 +30,7 @@ setPlayer(PlayerColor, PlayerType) :-
 	Sinon, il l'ajoute.
 */
 setBrd(Brd) :-
-	retract(board(_)),
+	retractall(board(_)),
 	assertz(board(Brd)), !.
 setBrd(Brd) :-
 	assertz(board(Brd)).
@@ -43,7 +43,7 @@ setBrd(Brd) :-
 	Sinon, il l'ajoute.
 */
 setKhan(Khan) :-
-	retract(khan(_)),
+	retractall(khan(_)),
 	assertz(khan(Khan)), !.
 setKhan(Khan) :-
 	assertz(khan(Khan)).

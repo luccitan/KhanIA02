@@ -164,12 +164,16 @@ showCellsContent([Cell|Q],Khan, I, J) :-
 	writeCellContent(Cell, false),
 	SubJ is J + 1, showCellsContent(Q, Khan, I, SubJ), !.
 
-% writeCell
-% sous-prédicat pour showCells
+% writeCellPower
+% sous-prédicat pour showCellsPower
+% -- Affiche la puissance de la case
 writeCellPower((1,_)) :- write("-  |"), !.
 writeCellPower((2,_)) :- write("=  |"), !.
 writeCellPower((3,_)) :- write("#  |"), !.
 
+% writeCellContent
+% sous-prédicat pour showCellsContent
+% -- Affiche le contenu de la case
 writeCellContent((_,empty),_) :- write("   |"), !.
 writeCellContent((_,kr),false) :- write(" R |"), !.
 writeCellContent((_,ko),false) :- write(" O |"), !.
