@@ -1,6 +1,6 @@
 % ------------------------------------------------------------------
 %	@developer : Tanguy LUCCI, UTC Student
-%	@developer : Alexandre-Guillaume GUILBERT, UTC Student
+%	@developer : Alexandre-Guillaume GILBERT, UTC Student
 % ------------------------------------------------------------------
 
 /*
