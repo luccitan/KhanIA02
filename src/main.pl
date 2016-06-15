@@ -19,7 +19,7 @@
 :- include('externaltools.pl').
 :- include('engine.pl').
 :- include('init.pl').
-:- include('minmax.pl').
+:- include('minimax.pl').
 :- include('dynamic.pl').
 
 /* 
