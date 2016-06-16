@@ -19,4 +19,4 @@
 
 ### En savoir plus ...
 
-Le rapport complet est disponible dans [docs/rapport.pdf](docs/rapport.pdf "Rapport")
+Le rapport complet est disponible dans [doc/rapport.pdf](doc/rapport.pdf "Rapport")
